@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { absoluteUrl, siteConfig } from '@/lib/site-config';
 import './globals.css';
+import './chat.css';
 const title = 'Tesoob — O comum ficou para trás.';
 const description =
   'Peças exclusivas, recortes e atitude. Conheça os looks e o universo da Tesoob e converse sobre sua encomenda.';

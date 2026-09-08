@@ -1,0 +1,6 @@
+# Production bootstrap: use the account created in the local /admin setup.
+# Password HASH only. Never store a plaintext password in runtime variables.
+TESOOB_ADMIN_EMAIL=""
+TESOOB_ADMIN_PASSWORD_HASH=""
+# These values seed the first account only when no admin exists.
+# Public self-registration is disabled; local setup closes after first use.

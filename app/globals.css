@@ -14,6 +14,13 @@
   font-weight: 400 800;
   font-display: swap;
 }
+@font-face {
+  font-family: 'Trade Winds';
+  src: url('/fonts/trade-winds.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -56,6 +63,7 @@
   --ring: #e8e5dc;
   --red: #df281b;
   --paper: #e8e5dc;
+  --font-brand: 'Trade Winds', 'Barlow Condensed', Impact, sans-serif;
   --radius: 2px;
 }
 * {
@@ -528,6 +536,20 @@ figure {
 }
 .hero h1 .title-red {
   color: var(--red);
+}
+.brand-accent {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  font-size: 0.68em;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+.hero h1 .title-line.title-brand {
+  padding-block: 0.09em 0.16em;
+  margin-bottom: -0.16em;
+}
+.hero h1 .title-brand > span {
+  font-size: 0.59em;
 }
 .hero-frame {
   transform: translate(var(--pointer-x, 0px), var(--pointer-y, 0px))
@@ -1146,11 +1168,23 @@ figure {
   border-top: 1px solid var(--border);
   padding-top: 23px;
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
   font-size: 8px;
   letter-spacing: 0.6px;
   color: var(--muted-foreground);
+}
+.footer-credit {
+  font-size: 11px;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+.footer-credit strong {
+  color: var(--paper);
+  font-weight: 600;
+  white-space: nowrap;
 }
 .footer-bottom a {
   display: flex;

@@ -28,6 +28,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { OrderLauncher } from '@/components/order-chat';
 import {
   editorialPhotos,
   looks,
@@ -87,16 +88,9 @@ export function ContactLink({
   input?: OrderInput;
 }) {
   return (
-    <a
-      className={className}
-      href={contactUrl(input)}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {children ||
-        (hasWhatsApp ? 'Encomendar pelo WhatsApp' : 'Conversar pelo Instagram')}
-      <ArrowUpRight size={19} />
-    </a>
+    <OrderLauncher className={className} input={input}>
+      {children || 'Encomendar sua peça'}
+    </OrderLauncher>
   );
 }
 
@@ -125,9 +119,7 @@ export function SiteHeader() {
         ))}
       </nav>
       <div className="header-right">
-        <Link className="header-contact" href="/#encomendar">
-          Encomendar <ArrowUpRight size={16} />
-        </Link>
+        <OrderLauncher className="header-contact">Encomendar</OrderLauncher>
         <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
           <DialogTrigger
             render={
@@ -219,6 +211,10 @@ export function SiteFooter() {
         >
           Por Lúcio Henrique <ArrowUpRight size={12} />
         </a>
+        <span className="footer-credit">
+          Site criado por <strong>emanuel silv</strong>
+        </span>
+        <Link href="/admin">Área do ateliê</Link>
         <a href="#conteudo">Voltar ao topo ↑</a>
       </div>
     </footer>
@@ -296,8 +292,8 @@ function Hero() {
           <span className="title-line">
             <span>FICOU</span>
           </span>
-          <span className="title-line title-red">
-            <span>PARA TRÁS.</span>
+          <span className="title-line title-red title-brand">
+            <span className="brand-accent">PARA TRÁS.</span>
           </span>
         </h1>
         <div className="hero-bottom">
@@ -651,7 +647,7 @@ function CloseDetails() {
         <div className="close-tabs-heading">
           <h2>
             NADA AQUI É<br />
-            <span>POR ACASO.</span>
+            <span className="brand-accent">POR ACASO.</span>
           </h2>
           <TabsList
             className="detail-tabs"
@@ -756,7 +752,7 @@ function ProcessSection() {
               <br />
               EXISTE UM
               <br />
-              <span>OLHAR.</span>
+              <span className="brand-accent">OLHAR.</span>
             </p>
             <a
               className="text-link"
@@ -785,7 +781,7 @@ function OrderSection() {
           <br />
           COMEÇA NUMA
           <br />
-          <span>CONVERSA.</span>
+          <span className="brand-accent">CONVERSA.</span>
         </h2>
         <p className="order-description">
           Envie a referência que chamou sua atenção.
@@ -795,9 +791,7 @@ function OrderSection() {
         </p>
         <ContactLink />
         <p className="contact-note">
-          {hasWhatsApp
-            ? 'Sem cadastro. Direto com a Tesoob.'
-            : 'Encomendas e consultas pelo nosso Instagram.'}
+          Sem cadastro. Pelo Instagram ou pelo chat do site.
         </p>
       </div>
       <div className="order-side" data-reveal>
@@ -860,9 +854,7 @@ function MobileContact() {
   return visible ? (
     <div className="mobile-contact">
       <span>Sua próxima peça?</span>
-      <ContactLink className="action action-red">
-        {hasWhatsApp ? 'Falar no WhatsApp' : 'Falar no Instagram'}
-      </ContactLink>
+      <ContactLink className="action action-red">Encomendar</ContactLink>
     </div>
   ) : null;
 }
@@ -886,7 +878,7 @@ export function HomePage() {
               <h2>
                 ATITUDE EM
                 <br />
-                <span>CADA DETALHE.</span>
+                <span className="brand-accent">CADA DETALHE.</span>
               </h2>
             </div>
             <p>
@@ -909,7 +901,7 @@ export function HomePage() {
               <h2>
                 FORA DO ÓBVIO.
                 <br />
-                <span>DENTRO DA CENA.</span>
+                <span className="brand-accent">DENTRO DA CENA.</span>
               </h2>
             </div>
             <p>
@@ -1033,10 +1025,9 @@ export function LookPage({ look }: { look: Look }) {
             <div className="order-form">
               <h2>Vamos conversar sobre essa peça?</h2>
               <p>
-                {hasWhatsApp
-                  ? 'Consulte valores, disponibilidade e possibilidades pelo WhatsApp.'
-                  : 'Consulte valores, disponibilidade e possibilidades pelo Instagram.'}{' '}
-                Você pode se interessar pelo look ou por uma das peças.
+                Consulte valores, disponibilidade e possibilidades pelo
+                Instagram ou pelo chat do site. Você pode se interessar pelo
+                look ou por uma das peças.
               </p>
               <details className="optional-fields">
                 <summary>
@@ -1076,9 +1067,7 @@ export function LookPage({ look }: { look: Look }) {
                 </div>
               </details>
               <ContactLink input={input}>
-                {hasWhatsApp
-                  ? 'Encomendar esta referência'
-                  : 'Consultar pelo Instagram'}
+                Encomendar esta referência
               </ContactLink>
               {!hasWhatsApp && (
                 <>
@@ -1135,7 +1124,7 @@ export function LookPage({ look }: { look: Look }) {
             <h2>
               A PEÇA
               <br />
-              <span>EM MOVIMENTO.</span>
+              <span className="brand-accent">EM MOVIMENTO.</span>
             </h2>
           </div>
           <div className="look-videos">
