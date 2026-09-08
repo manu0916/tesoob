@@ -1,0 +1,32 @@
+[
+  {
+    "id": "detalhes-amarracoes",
+    "src": "detalhes-amarracoes.webp",
+    "original": "vistatesoob/posts/DbHBEe2CQ0--06.jpg",
+    "cropCoordinates": [945, 1110, 1435, 1600],
+    "coordinateFormat": "left, top, right, bottom; pixels of original image",
+    "width": 490,
+    "height": 490,
+    "alt": "Amarrações cruzadas por ilhoses no tecido vermelho."
+  },
+  {
+    "id": "detalhes-ferragens",
+    "src": "detalhes-ferragens.webp",
+    "original": "vistatesoob/posts/DbHBEe2CQ0--09.jpg",
+    "cropCoordinates": [910, 1120, 1430, 1640],
+    "coordinateFormat": "left, top, right, bottom; pixels of original image",
+    "width": 520,
+    "height": 520,
+    "alt": "Cinto e ilhoses metálicos junto aos recortes do look verde."
+  },
+  {
+    "id": "detalhes-camadas",
+    "src": "detalhes-camadas.webp",
+    "original": "vistatesoob/posts/DcenpiDozU5-02.jpg",
+    "cropCoordinates": [220, 1920, 1140, 2840],
+    "coordinateFormat": "left, top, right, bottom; pixels of original image",
+    "width": 800,
+    "height": 800,
+    "alt": "Camadas claras e roxas e aplicações brilhantes no manequim."
+  }
+]

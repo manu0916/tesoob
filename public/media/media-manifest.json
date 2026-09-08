@@ -1,0 +1,635 @@
+{
+  "images": [
+    {
+      "id": "placa",
+      "original": "vistatesoob/posts/Daxq6DZOe5X.jpg",
+      "originalFormat": "JPEG",
+      "originalWidth": 1207,
+      "originalHeight": 1350,
+      "group": "identidade",
+      "alt": "Placa Tesoob em uma carroceria de metal envelhecido.",
+      "focalPoint": "50% 50%",
+      "src": "placa.webp",
+      "width": 1207,
+      "height": 1350,
+      "variants": [
+        {
+          "src": "placa-480.webp",
+          "width": 480,
+          "height": 537,
+          "bytes": 13152
+        },
+        {
+          "src": "placa-800.webp",
+          "width": 800,
+          "height": 895,
+          "bytes": 27392
+        },
+        {
+          "src": "placa.webp",
+          "width": 1207,
+          "height": 1350,
+          "bytes": 62232
+        }
+      ]
+    },
+    {
+      "id": "editorial-01",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--01.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Duas modelos com looks verde e vermelho entre carrocerias.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-01.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-01-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 27842
+        },
+        {
+          "src": "editorial-01-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 49066
+        },
+        {
+          "src": "editorial-01.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 77452,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-02",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--02.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Colagem de detalhes dos looks vermelho e verde e do espaço de criação.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-02.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-02-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 24854
+        },
+        {
+          "src": "editorial-02-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 45664
+        },
+        {
+          "src": "editorial-02.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 76512,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-03",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--03.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Colagem aproximando amarrações vermelhas e ferragens do look verde.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-03.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-03-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 26954
+        },
+        {
+          "src": "editorial-03-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 49444
+        },
+        {
+          "src": "editorial-03.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 78630,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-04",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--04.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Modelos com os looks verde e vermelho junto à carroceria com a marca Tesoob.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-04.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-04-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 23608
+        },
+        {
+          "src": "editorial-04-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 40732
+        },
+        {
+          "src": "editorial-04.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 67346,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-05",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--05.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Look verde com cinto, fivela e recortes em colagem no cenário de carros.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-05.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-05-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 32712
+        },
+        {
+          "src": "editorial-05-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 54844
+        },
+        {
+          "src": "editorial-05.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 86244,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-06",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--06.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Look vermelho com amarrações em colagem de corpo e retrato.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-06.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-06-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 28342
+        },
+        {
+          "src": "editorial-06-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 48662
+        },
+        {
+          "src": "editorial-06.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 76110,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-07",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--07.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Modelo usando o look verde junto ao carro com a placa Tesoob.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-07.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-07-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 31510
+        },
+        {
+          "src": "editorial-07-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 52814
+        },
+        {
+          "src": "editorial-07.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 81044,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-08",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--08.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Look vermelho com amarrações em uma composição com retrato.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-08.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-08-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 28816
+        },
+        {
+          "src": "editorial-08-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 51072
+        },
+        {
+          "src": "editorial-08.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 81846,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-09",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--09.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Look verde, ilhoses e detalhes do cenário industrial.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-09.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-09-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 24366
+        },
+        {
+          "src": "editorial-09-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 43260
+        },
+        {
+          "src": "editorial-09.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 73384,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-10",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--10.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "Modelo de verde sentada em uma composição com moldura clara.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-10.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-10-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 19026
+        },
+        {
+          "src": "editorial-10-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 34496
+        },
+        {
+          "src": "editorial-10.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 60962,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "editorial-11",
+      "original": "vistatesoob/posts/DbHBEe2CQ0--11.jpg",
+      "originalFormat": "WEBP",
+      "originalWidth": 1440,
+      "originalHeight": 1800,
+      "group": "editorial",
+      "alt": "As duas modelos com os looks vermelho e verde em moldura fotográfica.",
+      "focalPoint": "50% 50%",
+      "src": "editorial-11.webp",
+      "width": 1440,
+      "height": 1800,
+      "variants": [
+        {
+          "src": "editorial-11-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 23846
+        },
+        {
+          "src": "editorial-11-800.webp",
+          "width": 800,
+          "height": 1000,
+          "bytes": 40710
+        },
+        {
+          "src": "editorial-11.webp",
+          "width": 1440,
+          "height": 1800,
+          "bytes": 62914,
+          "note": "Original WebP preserved byte for byte; correct extension."
+        }
+      ]
+    },
+    {
+      "id": "processo-01",
+      "original": "vistatesoob/posts/DcenpiDozU5-01.jpg",
+      "originalFormat": "JPEG",
+      "originalWidth": 1080,
+      "originalHeight": 1440,
+      "group": "processo",
+      "alt": "Criador ao lado do manequim com look de jeans claro e roxo.",
+      "focalPoint": "50% 50%",
+      "src": "processo-01.webp",
+      "width": 1080,
+      "height": 1440,
+      "variants": [
+        {
+          "src": "processo-01-480.webp",
+          "width": 480,
+          "height": 640,
+          "bytes": 27556
+        },
+        {
+          "src": "processo-01-800.webp",
+          "width": 800,
+          "height": 1067,
+          "bytes": 51562
+        },
+        {
+          "src": "processo-01.webp",
+          "width": 1080,
+          "height": 1440,
+          "bytes": 93598
+        }
+      ]
+    },
+    {
+      "id": "processo-02",
+      "original": "vistatesoob/posts/DcenpiDozU5-02.jpg",
+      "originalFormat": "JPEG",
+      "originalWidth": 2160,
+      "originalHeight": 2877,
+      "group": "processo",
+      "alt": "Colagem com o letreiro Tesoob e detalhes do look de jeans claro e roxo.",
+      "focalPoint": "50% 50%",
+      "src": "processo-02.webp",
+      "width": 1440,
+      "height": 1918,
+      "variants": [
+        {
+          "src": "processo-02-480.webp",
+          "width": 480,
+          "height": 639,
+          "bytes": 47680
+        },
+        {
+          "src": "processo-02-800.webp",
+          "width": 800,
+          "height": 1066,
+          "bytes": 98978
+        },
+        {
+          "src": "processo-02.webp",
+          "width": 1440,
+          "height": 1918,
+          "bytes": 262716
+        }
+      ]
+    },
+    {
+      "id": "processo-03",
+      "original": "vistatesoob/posts/DcenpiDozU5-03.jpg",
+      "originalFormat": "JPEG",
+      "originalWidth": 1080,
+      "originalHeight": 1440,
+      "group": "processo",
+      "alt": "Fotografia em preto e branco de trabalho manual sobre a peça.",
+      "focalPoint": "50% 50%",
+      "src": "processo-03.webp",
+      "width": 1080,
+      "height": 1440,
+      "variants": [
+        {
+          "src": "processo-03-480.webp",
+          "width": 480,
+          "height": 640,
+          "bytes": 16520
+        },
+        {
+          "src": "processo-03-800.webp",
+          "width": 800,
+          "height": 1067,
+          "bytes": 29904
+        },
+        {
+          "src": "processo-03.webp",
+          "width": 1080,
+          "height": 1440,
+          "bytes": 52708
+        }
+      ]
+    },
+    {
+      "id": "processo-04",
+      "original": "vistatesoob/posts/DcenpiDozU5-04.jpg",
+      "originalFormat": "JPEG",
+      "originalWidth": 1080,
+      "originalHeight": 1440,
+      "group": "processo",
+      "alt": "Look de jeans claro e roxo com aplicações e camadas no manequim.",
+      "focalPoint": "50% 50%",
+      "src": "processo-04.webp",
+      "width": 1080,
+      "height": 1440,
+      "variants": [
+        {
+          "src": "processo-04-480.webp",
+          "width": 480,
+          "height": 640,
+          "bytes": 34836
+        },
+        {
+          "src": "processo-04-800.webp",
+          "width": 800,
+          "height": 1067,
+          "bytes": 67224
+        },
+        {
+          "src": "processo-04.webp",
+          "width": 1080,
+          "height": 1440,
+          "bytes": 117008
+        }
+      ]
+    }
+  ],
+  "videos": [
+    {
+      "id": "jeans-clipe",
+      "original": "vistatesoob/posts/DcenpiDozU5-05.mp4",
+      "src": "jeans-clipe.mp4",
+      "poster": "jeans-clipe-poster.webp",
+      "posterTime": 0.1,
+      "width": 720,
+      "height": 960,
+      "duration": 0.83,
+      "bytes": 89943,
+      "title": "Clipe breve do look no manequim"
+    },
+    {
+      "id": "jeans-detalhes",
+      "original": "vistatesoob/posts/DcenpiDozU5-06.mp4",
+      "src": "jeans-detalhes.mp4",
+      "poster": "jeans-detalhes-poster.webp",
+      "posterTime": 1.0,
+      "width": 720,
+      "height": 960,
+      "duration": 8.3,
+      "bytes": 1138813,
+      "title": "Detalhes e aplicações no look de jeans"
+    },
+    {
+      "id": "jeans-movimento",
+      "original": "vistatesoob/posts/DcenpiDozU5-07.mp4",
+      "src": "jeans-movimento.mp4",
+      "poster": "jeans-movimento-poster.webp",
+      "posterTime": 2.0,
+      "width": 720,
+      "height": 960,
+      "duration": 30.28,
+      "bytes": 6436488,
+      "title": "Look em uso durante uma apresentação"
+    },
+    {
+      "id": "jeans-aplicacoes",
+      "original": "vistatesoob/posts/DcenpiDozU5-08.mp4",
+      "src": "jeans-aplicacoes.mp4",
+      "poster": "jeans-aplicacoes-poster.webp",
+      "posterTime": 1.5,
+      "width": 720,
+      "height": 960,
+      "duration": 6.1,
+      "bytes": 922187,
+      "title": "Aplicações nas costas da peça de jeans"
+    },
+    {
+      "id": "editorial-filme",
+      "original": "vistatesoob/reels/Da3m2CepRmF.mp4",
+      "src": "editorial-filme.mp4",
+      "poster": "editorial-filme-poster.webp",
+      "posterTime": 12,
+      "width": 720,
+      "height": 1280,
+      "duration": 56.35,
+      "bytes": 13831381,
+      "title": "Editorial Tesoob entre carrocerias"
+    },
+    {
+      "id": "processo-filme",
+      "original": "vistatesoob/reels/DavNnEMuZk0.mp4",
+      "src": "processo-filme.mp4",
+      "poster": "processo-filme-poster.webp",
+      "posterTime": 0.5,
+      "width": 720,
+      "height": 1280,
+      "duration": 17.76,
+      "bytes": 1607442,
+      "title": "Bastidores do trabalho manual"
+    }
+  ],
+  "brand": {
+    "logo": {
+      "src": "logo-tesoob.png",
+      "width": 701,
+      "height": 144,
+      "source": "vistatesoob/reels/Da3m2CepRmF.mp4",
+      "frameTime": 54,
+      "crop": [16, 499, 717, 643],
+      "notes": "Recorte fiel do quadro, com fundo preto e sem tagline. Desfoque presente no lettering original."
+    },
+    "favicon": "favicon.png",
+    "socialCard": {
+      "src": "social-card.jpg",
+      "width": 1200,
+      "height": 630,
+      "source": "vistatesoob/posts/DbHBEe2CQ0--01.jpg"
+    }
+  }
+}
