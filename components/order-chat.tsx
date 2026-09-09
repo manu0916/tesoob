@@ -8,11 +8,17 @@ import {
   type ReactNode,
 } from 'react';
 import {
+  Asterisk,
   ArrowLeft,
   ArrowUpRight,
   Camera,
+  CircleDashed,
   LoaderCircle,
   MessageSquare,
+  MoveDownRight,
+  Scissors,
+  Shirt,
+  Sparkles,
   X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -267,6 +273,7 @@ function CustomerChat({
         </>
       ) : (
         <form className="chat-start-form" onSubmit={start}>
+          <OrderDoodles />
           <div className="chat-start-intro">
             <span>do seu jeito.</span>
             <p>
@@ -348,6 +355,35 @@ function CustomerChat({
           </p>
         </form>
       )}
+    </div>
+  );
+}
+
+function OrderDoodles() {
+  return (
+    <div className="chat-doodles" aria-hidden="true">
+      <Shirt className="chat-doodle chat-doodle-shirt" strokeWidth={1.05} />
+      <Scissors
+        className="chat-doodle chat-doodle-scissors"
+        strokeWidth={1.15}
+      />
+      <Sparkles
+        className="chat-doodle chat-doodle-sparkles"
+        strokeWidth={1.2}
+      />
+      <CircleDashed
+        className="chat-doodle chat-doodle-circle"
+        strokeWidth={0.9}
+      />
+      <MoveDownRight
+        className="chat-doodle chat-doodle-arrow"
+        strokeWidth={1.15}
+      />
+      <Asterisk
+        className="chat-doodle chat-doodle-asterisk"
+        strokeWidth={1.15}
+      />
+      <span className="chat-doodle-stitch" />
     </div>
   );
 }
