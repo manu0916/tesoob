@@ -133,7 +133,11 @@ export function SiteHeader() {
           >
             <Menu size={22} />
           </DialogTrigger>
-          <DialogContent className="mobile-menu" showCloseButton={false}>
+          <DialogContent
+            className="mobile-menu"
+            showCloseButton={false}
+            fullScreen
+          >
             <DialogTitle className="sr-only">Navegação Tesoob</DialogTitle>
             <DialogDescription className="sr-only">
               Explore as peças, o editorial e os bastidores.
