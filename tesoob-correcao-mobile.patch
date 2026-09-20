@@ -1,0 +1,65 @@
+diff --git a/app/globals.css b/app/globals.css
+index 7a44d19..cdaff13 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -1212,6 +1212,8 @@ figure {
+   max-width: none;
+   height: 94dvh;
+   transform: none;
++  /* Dialog centering uses the independent translate property in Tailwind 4. */
++  translate: none;
+   border-radius: 0;
+   padding: 0;
+   background: #0b0c0afc;
+@@ -1263,6 +1265,7 @@ figure {
+ .mobile-menu[data-slot='dialog-content'] {
+   inset: 0;
+   transform: none;
++  translate: none;
+   width: 100%;
+   max-width: none;
+   height: 100dvh;
+@@ -1270,6 +1273,8 @@ figure {
+   padding: 75px 8% 35px;
+   display: flex;
+   flex-direction: column;
++  overflow-y: auto;
++  overscroll-behavior: contain;
+   border-radius: 0;
+   z-index: 80;
+ }
+diff --git a/package.json b/package.json
+index 1500628..c63125f 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,7 @@
+     "node": ">=22.13.0"
+   },
+   "scripts": {
+-    "dev": "vinext dev",
++    "dev": "vite",
+     "build": "vinext build",
+     "start": "wrangler dev --config dist/server/wrangler.json",
+     "lint": "oxlint",
+diff --git a/vite.config.ts b/vite.config.ts
+index af99241..6e84597 100644
+--- a/vite.config.ts
++++ b/vite.config.ts
+@@ -45,9 +45,14 @@ export default defineConfig(async () => {
+ 
+   return {
+     css: { postcss: { plugins: [tailwindcss()] } },
+-    server: isCodexSeatbeltSandbox
+-      ? { watch: { useFsEvents: false, usePolling: true } }
+-      : undefined,
++    server: {
++      host: '0.0.0.0',
++      port: 3000,
++      allowedHosts: ['terminal.local'],
++      ...(isCodexSeatbeltSandbox
++        ? { watch: { useFsEvents: false, usePolling: true } }
++        : {}),
++    },
+     plugins: [
+       vinext(),
+       sites(),

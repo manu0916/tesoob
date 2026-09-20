@@ -1212,6 +1212,8 @@ figure {
   max-width: none;
   height: 94dvh;
   transform: none;
+  /* Dialog centering uses the independent translate property in Tailwind 4. */
+  translate: none;
   border-radius: 0;
   padding: 0;
   background: #0b0c0afc;
@@ -1263,6 +1265,7 @@ figure {
 .mobile-menu[data-slot='dialog-content'] {
   inset: 0;
   transform: none;
+  translate: none;
   width: 100%;
   max-width: none;
   height: 100dvh;
@@ -1270,6 +1273,8 @@ figure {
   padding: 75px 8% 35px;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-radius: 0;
   z-index: 80;
 }
