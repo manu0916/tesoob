@@ -38,7 +38,7 @@ O logo foi extraído fielmente do quadro de 54 segundos do reel original. A imag
 - Sem erros de execução ou arquivos HTTP ausentes durante os fluxos conferidos.
 - O envio ao WhatsApp real depende do telefone correto e permanece pendente. Nenhum botão confirma pedido ou envia mensagem automaticamente.
 
-O repositório de Sites e `.openai/hosting.json` identificam o projeto. Chat e vitrine usam a mesma binding D1 (`DB`), em tabelas separadas, preservando os registros existentes. Java/PostgreSQL não são usados pelo site atual. Não há cobrança automática.
+O projeto usa bindings locais de runtime e persistência em tabelas separadas para chat e vitrine, preservando os registros existentes. Java/PostgreSQL não são usados pelo site atual. Não há cobrança automática.
 
 ## Chat de encomendas
 

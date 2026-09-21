@@ -1,36 +1,14 @@
-import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig } from 'vite';
-import hostingConfig from './.openai/hosting.json';
 
-const TESOOB_D1_DATABASE_ID = '424b78fc-08bc-4380-b4fa-e8155b31a3cc';
-
-const { d1, r2 } = hostingConfig;
-
-// macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
-const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
+const usePollingForLocalFs = process.env.VITE_USE_POLLING === '1';
 
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
   compatibility_flags: ['nodejs_compat'],
-  d1_databases: d1
-    ? [
-        {
-          binding: d1,
-          database_name: 'tesoob',
-          database_id: TESOOB_D1_DATABASE_ID,
-        },
-      ]
-    : [],
-  r2_buckets: r2
-    ? [
-        {
-          binding: r2,
-          bucket_name: 'site-creator-r2',
-        },
-      ]
-    : [],
+  d1_databases: [],
+  r2_buckets: [],
 };
 
 export default defineConfig(async ({ command }) => {
@@ -52,12 +30,11 @@ export default defineConfig(async ({ command }) => {
       watch: {
         // Generated Pages files are rebuilt atomically and must not be watched on Windows/OneDrive.
         ignored: ['**/.pages-dist/**', '**/backend/target/**', '**/test-results/**'],
-        ...(isCodexSeatbeltSandbox ? { useFsEvents: false, usePolling: true } : {}),
+        ...(usePollingForLocalFs ? { useFsEvents: false, usePolling: true } : {}),
       },
     },
     plugins: [
       vinext(),
-      sites(),
       cloudflare({
         configPath: './deploy/wrangler.vite.jsonc',
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },

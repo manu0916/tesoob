@@ -4,7 +4,7 @@ export const siteConfig = {
   instagram: 'https://www.instagram.com/vistatesoob/',
   creatorInstagram: 'https://www.instagram.com/luciorique02/',
   whatsappNumber: null as string | null,
-  publicOrigin: 'https://vistatesoob.emanuel1093613.chatgpt.site',
+  publicOrigin: '',
 };
 
 export function validWhatsAppNumber(number: string | null): number is string {
