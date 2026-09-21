@@ -571,16 +571,25 @@ export function PhotoGallery({
 export function VideoPlayer({
   id,
   className = '',
+  continuous = false,
 }: {
   id: string;
   className?: string;
+  continuous?: boolean;
 }) {
   const item = video(id);
   const element = useRef<HTMLVideoElement>(null);
-  const [started, setStarted] = useState(false);
+  const [started, setStarted] = useState(continuous);
   const [error, setError] = useState(false);
   useEffect(() => {
     if (!started || !element.current) return;
+    if (continuous) {
+      // Muted inline playback is eligible for autoplay on mobile too.
+      // Keep native controls available if the browser blocks it or the visitor pauses.
+      element.current.muted = true;
+      void element.current.play().catch(() => {});
+      return;
+    }
     const observer = new IntersectionObserver(
       (entries) => {
         if (!entries[0].isIntersecting) element.current?.pause();
@@ -589,7 +598,7 @@ export function VideoPlayer({
     );
     observer.observe(element.current);
     return () => observer.disconnect();
-  }, [started]);
+  }, [started, continuous]);
   return (
     <div
       className={`video-player ${className}`}
@@ -607,6 +616,7 @@ export function VideoPlayer({
           controls
           playsInline
           muted
+          loop={continuous}
           preload="metadata"
           autoPlay
           onError={() => setError(true)}
@@ -769,7 +779,7 @@ function ProcessSection() {
             <figcaption>01 / ENTRE IDEIAS, RECORTES E APLICAÇÕES.</figcaption>
           </figure>
           <div className="process-film" data-reveal>
-            <VideoPlayer id="processo-filme" />
+            <VideoPlayer id="processo-filme" continuous />
             <p>
               O processo em movimento. <ArrowUpRight size={15} />
             </p>
@@ -959,7 +969,7 @@ export function HomePage() {
                 Veja o editorial em movimento.
               </p>
             </div>
-            <VideoPlayer id="editorial-filme" />
+            <VideoPlayer id="editorial-filme" continuous />
           </div>
         </section>
         <CloseDetails />
