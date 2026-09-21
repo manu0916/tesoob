@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { AdminOrders } from '@/components/admin-orders';
-import Link from 'next/link';
+import { SiteLink as Link } from '@/components/site-link';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {

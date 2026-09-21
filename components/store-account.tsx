@@ -1,7 +1,7 @@
 /* oxlint-disable next/no-html-link-for-pages -- Google OAuth must navigate to the Worker endpoint, not the client router. */
 'use client';
 import { useEffect, useState, type SubmitEvent } from 'react';
-import Link from 'next/link';
+import { SiteLink as Link } from '@/components/site-link';
 import { ArrowLeft, ArrowUpRight, LogOut, ShieldCheck } from 'lucide-react';
 import { StoreFrame, StoreNotice } from '@/components/storefront';
 import {

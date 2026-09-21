@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import Link from 'next/link';
+import { SiteLink as Link } from '@/components/site-link';
 import {
   ArrowDown,
   ArrowLeft,
@@ -489,6 +489,7 @@ export function PhotoGallery({
         <DialogContent
           className="lightbox"
           showCloseButton={false}
+          fullScreen
           finalFocus={returnFocus}
           onKeyDown={(event) => {
             if (event.key === 'ArrowRight') {
@@ -1199,6 +1200,7 @@ export function LookPage({ look }: { look: Look }) {
         <DialogContent
           className="lightbox detail-lightbox"
           showCloseButton={false}
+          fullScreen
           finalFocus={imageButton}
           onKeyDown={(event) => {
             if (event.key === 'ArrowRight')

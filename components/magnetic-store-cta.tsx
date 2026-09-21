@@ -1,6 +1,6 @@
 'use client';
 import { useRef } from 'react';
-import Link from 'next/link';
+import { SiteLink as Link } from '@/components/site-link';
 import { ShoppingBag, ArrowUpRight } from 'lucide-react';
 export function MagneticStoreCTA() {
   const ref = useRef<HTMLAnchorElement>(null);

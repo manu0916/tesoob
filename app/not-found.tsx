@@ -1,5 +1,5 @@
 /* oxlint-disable next/no-img-element -- This small logo is already optimized locally. */
-import Link from 'next/link';
+import { SiteLink as Link } from '@/components/site-link';
 export default function NotFound() {
   return (
     <main className="not-found section">

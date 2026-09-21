@@ -87,6 +87,18 @@ A UI continua em `/loja`, `/loja/produtos/[id]`, `/loja/conta`, `/loja/checkout/
 
 ## Desenvolvimento e verificação
 
+### Navegação no Pages
+
+Os links internos usam `components/site-link.tsx` (âncoras nativas). No bundle
+publicado, o roteador cliente do Vinext interceptava os cliques e lançava
+`TypeError: e is not a function`; o prefetch também falhava. A navegação nativa
+carrega a página completa, mantém parâmetros como `next`, aceita teclado/nova
+aba e não depende desse roteador. Não substituir por `next/link` sem validar
+os cliques no artefato de produção do Pages.
+
+`tests/store/buttons.spec.ts` testa esses redirecionamentos em celular e desktop,
+sem enviar formulários nem criar registros no banco.
+
 ```powershell
 npm install
 npm run dev

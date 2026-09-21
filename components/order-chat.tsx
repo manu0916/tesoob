@@ -82,7 +82,10 @@ export function OrderLauncher({
             className="chat-close"
             variant="ghost"
             aria-label="Fechar encomenda"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              setStep('choose');
+            }}
           >
             <X size={22} />
           </Button>

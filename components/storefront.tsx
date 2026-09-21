@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
-import Link from 'next/link';
+import { SiteLink as Link } from '@/components/site-link';
 import {
   ArrowUpRight,
   ArrowLeft,

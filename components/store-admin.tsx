@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, type SubmitEvent } from 'react';
-import Link from 'next/link';
+import { SiteLink as Link } from '@/components/site-link';
 import {
   ArrowLeft,
   Plus,
