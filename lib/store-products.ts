@@ -1,5 +1,6 @@
 import { productColumns, productView, type ProductRow } from './store-database';
 import { fail, fields, integer, textField } from './store-security';
+import { uploadedImagePattern } from './store-image-format';
 export function pageNumber(url: URL) {
   return integer(Number(url.searchParams.get('page') || 0), 0, 100000);
 }
@@ -38,6 +39,7 @@ export async function saveProduct(
   db: D1Database,
   id: string | null,
   data: Record<string, unknown>,
+  images?: R2Bucket,
 ) {
   fields(data, [
     'name',
@@ -52,7 +54,11 @@ export async function saveProduct(
     description = textField(data, 'description', 10000),
     observation = textField(data, 'observation', 5000, true) || null;
   const image = textField(data, 'imageUrl', 2048);
-  if (!/^\/media\/[A-Za-z0-9._-]+\.(webp|png|jpe?g)$/.test(image)) {
+  const uploaded = image.match(uploadedImagePattern)?.[1];
+  if (uploaded) {
+    if (!images) return fail(503, 'O armazenamento de imagens ainda não foi configurado.');
+    if (!(await images.head(`products/${uploaded}`))) return fail(400, 'Envie a foto novamente antes de salvar.');
+  } else if (!/^\/media\/[A-Za-z0-9._-]+\.(webp|png|jpe?g)$/.test(image)) {
     try {
       const url = new URL(image);
       if (url.protocol !== 'https:' || url.username || url.password)

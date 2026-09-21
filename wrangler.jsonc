@@ -8,5 +8,9 @@
     "binding": "DB",
     "database_name": "tesoob",
     "database_id": "424b78fc-08bc-4380-b4fa-e8155b31a3cc"
+  }],
+  "r2_buckets": [{
+    "binding": "STORE_IMAGES",
+    "bucket_name": "tesoob-media"
   }]
 }

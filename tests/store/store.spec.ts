@@ -135,8 +135,8 @@ test('administrador cria, edita e retira produto; observação branca não ocupa
   await page.getByLabel('Nome', { exact: true }).fill(productName);
   await page.getByLabel('Preço (R$)', { exact: true }).fill('199.90');
   await page
-    .getByLabel('URL da imagem', { exact: true })
-    .fill('/media/editorial-04.webp');
+    .getByLabel('Foto da peça', { exact: true })
+    .setInputFiles('public/media/editorial-04.webp');
   await page
     .getByLabel('Descrição', { exact: true })
     .fill('Descrição do produto de teste.');

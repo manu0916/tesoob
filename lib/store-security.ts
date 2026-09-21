@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 
 export type StoreEnvironment = {
   DB?: D1Database;
+  STORE_IMAGES?: R2Bucket;
   STORE_AES_KEY?: string;
   STORE_AES_KEYS?: string;
   STORE_ACTIVE_KEY?: string;

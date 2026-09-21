@@ -20,6 +20,8 @@ test.beforeEach(async ({ page, baseURL }) => {
         observation: null, active: true, version: 0 }], page: 0, totalPages: 1, totalElements: 1 } });
     if (path === '/store-api/auth/csrf')
       return route.fulfill({ json: { token: 'fixture', headerName: 'X-CSRF-Token' } });
+    if (path === '/store-api/admin/images')
+      return route.fulfill({ status: 201, json: { imageUrl: `/store-api/images/${'a'.repeat(64)}.webp` } });
     if (path.startsWith('/store-api/admin/products') && route.request().method() !== 'GET')
       return route.fulfill({ status: 204 });
     return route.fulfill({ status: 401, json: { message: 'Entre na sua conta.' } });
@@ -65,7 +67,7 @@ for (const width of [390, 1440]) {
     await page.screenshot({ path: info.outputPath(`editor-${width}.png`) });
     await page.getByRole('textbox', { name: 'Nome', exact: true }).fill('Peça apenas de teste');
     await page.getByRole('spinbutton', { name: 'Preço (R$)' }).fill('189');
-    await page.getByRole('textbox', { name: 'URL da imagem' }).fill('/media/editorial-04.webp');
+    await page.getByLabel('Foto da peça', { exact: true }).setInputFiles('public/media/editorial-04.webp');
     await page.getByRole('textbox', { name: 'Descrição', exact: true }).fill('Teste no navegador, sem gravação no banco.');
     await page.getByRole('button', { name: 'Salvar produto' }).click();
     await expect(page.getByText('Produto salvo. A vitrine já usa os novos dados.')).toBeVisible();

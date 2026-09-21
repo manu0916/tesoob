@@ -18,6 +18,7 @@ import {
   pageNumber,
 } from './store-products';
 import { createOrder, getOrder, listOrders } from './store-orders';
+import { uploadProductImage, serveProductImage } from './store-images';
 import {
   cookie,
   csrf,
@@ -48,6 +49,8 @@ export async function handleStore(
     const url = new URL(request.url),
       path = url.pathname.replace(/^\/store-api/, '');
     const method = request.method;
+    if (path.startsWith('/images/') && ['GET', 'HEAD'].includes(method))
+      return await serveProductImage(request, settings);
     if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method))
       return json({ message: 'Método inválido.' }, 405);
     if (method !== 'GET') csrf(request);
@@ -89,14 +92,18 @@ export async function handleStore(
       return json(await getProduct(db, productId));
     if (path.startsWith('/admin/')) {
       await requireStoreAdmin(request);
+      if (path === '/admin/images' && method === 'POST') {
+        await throttle(db, request, 'admin-image-upload', 20);
+        return json(await uploadProductImage(request, settings), 201);
+      }
       if (path === '/admin/products' && method === 'GET')
         return json(await listProducts(db, pageNumber(url), true));
       if (path === '/admin/products' && method === 'POST')
-        return json(await saveProduct(db, null, await readJson(request)), 201);
+        return json(await saveProduct(db, null, await readJson(request), settings.STORE_IMAGES), 201);
       const id = path.match(/^\/admin\/products\/([^/]+)$/)?.[1];
       if (id && uuid(id)) {
         if (method === 'PUT')
-          return json(await saveProduct(db, id, await readJson(request)));
+          return json(await saveProduct(db, id, await readJson(request), settings.STORE_IMAGES));
         if (method === 'DELETE') {
           if (!url.searchParams.has('version'))
             return fail(400, 'Informe a versão do produto.');

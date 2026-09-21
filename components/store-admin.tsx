@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { StoreFrame, StoreNotice, ProductImage } from '@/components/storefront';
 import { AdminNavigation } from '@/components/admin-navigation';
+import { ProductImageInput } from '@/components/product-image-input';
+import { prepareProductImage } from '@/lib/prepare-product-image';
 import {
   storeApi,
   storeMessage,
@@ -30,6 +32,9 @@ export function StoreAdmin() {
   const [editing, setEditing] = useState<Product | 'new' | null>(null);
   const [deleting, setDeleting] = useState<Product | null>(null);
   const [busy, setBusy] = useState(false);
+  const saving = useRef(false);
+  const [uploading, setUploading] = useState(false);
+  const lastUpload = useRef<{ file: File; url: string } | null>(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [page, setPage] = useState(0);
@@ -90,12 +95,29 @@ export function StoreAdmin() {
   }, [user, page, revision]);
   async function save(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!editing) return;
+    if (!editing || saving.current) return;
     const data = new FormData(event.currentTarget);
+    const file = event.currentTarget.querySelector<HTMLInputElement>('input[name="imageFile"]')?.files?.[0];
+    saving.current = true;
     setBusy(true);
     setError('');
     setNotice('');
     try {
+      let imageUrl = editing === 'new' ? '' : editing.imageUrl;
+      if (file) {
+        if (lastUpload.current?.file === file) imageUrl = lastUpload.current.url;
+        else {
+          setUploading(true);
+          const blob = await prepareProductImage(file);
+          const uploaded = await storeApi<{ imageUrl: string }>('/admin/images', {
+            method: 'POST', body: blob, headers: { 'Content-Type': 'image/webp' },
+          });
+          imageUrl = uploaded.imageUrl;
+          lastUpload.current = { file, url: imageUrl };
+          setUploading(false);
+        }
+      }
+      if (!imageUrl) throw new Error('Escolha uma foto para a peça.');
       await storeApi(
         editing === 'new' ? '/admin/products' : `/admin/products/${editing.id}`,
         {
@@ -103,7 +125,7 @@ export function StoreAdmin() {
           body: JSON.stringify({
             name: formText(data, 'name').trim(),
             price: Number(formText(data, 'price')),
-            imageUrl: formText(data, 'imageUrl').trim(),
+            imageUrl,
             description: formText(data, 'description').trim(),
             observation: formText(data, 'observation').trim() || null,
             active: data.get('active') === 'on',
@@ -112,11 +134,14 @@ export function StoreAdmin() {
         },
       );
       setEditing(null);
+      lastUpload.current = null;
       setNotice('Produto salvo. A vitrine já usa os novos dados.');
       setRevision((n) => n + 1);
     } catch (e) {
       setError(storeMessage(e));
     } finally {
+      saving.current = false;
+      setUploading(false);
       setBusy(false);
     }
   }
@@ -158,6 +183,7 @@ export function StoreAdmin() {
         </div>
         {user?.role === 'ADMIN' && (
           <button
+            disabled={busy}
             onClick={(event) => {
               editorTrigger.current = event.currentTarget;
               setEditing('new');
@@ -193,7 +219,7 @@ export function StoreAdmin() {
               {notice}
             </p>
           )}
-          {error && (
+          {error && !editing && (
             <div role="alert" className="store-error">
               <p>{error}</p>
               <button
@@ -248,20 +274,7 @@ export function StoreAdmin() {
                       />
                     </label>
                   </div>
-                  <label>
-                    URL da imagem
-                    <input
-                      name="imageUrl"
-                      required
-                      maxLength={2048}
-                      defaultValue={product?.imageUrl}
-                      placeholder="https://… ou /media/arquivo.webp"
-                    />
-                  </label>
-                  <p className="store-fine-print">
-                    Use uma URL HTTPS ou uma mídia existente em /media/. A
-                    imagem precisa estar acessível aos visitantes.
-                  </p>
+                  <ProductImageInput currentUrl={product?.imageUrl} />
                   <label>
                     Descrição
                     <textarea
@@ -298,9 +311,10 @@ export function StoreAdmin() {
                     type="submit"
                     disabled={busy}
                   >
-                    {busy ? 'Salvando…' : 'Salvar produto'}
+                    {uploading ? 'Enviando foto…' : busy ? 'Salvando…' : 'Salvar produto'}
                     <Check size={18} />
                   </button>
+                  {error && <p role="alert" className="store-error">{error}</p>}
                 </fieldset>
               </form>
             </section>
@@ -360,6 +374,7 @@ export function StoreAdmin() {
                   <div className="store-admin-actions">
                     <button
                       className="store-admin-edit"
+                      disabled={busy}
                       aria-label={`Editar ${item.name}`}
                       onClick={(event) => {
                         editorTrigger.current = event.currentTarget;
@@ -372,7 +387,7 @@ export function StoreAdmin() {
                     <button
                       className="store-icon-button"
                       aria-label={`Retirar ${item.name}`}
-                      disabled={!item.active}
+                      disabled={busy || !item.active}
                       onClick={() => setDeleting(item)}
                     >
                       <Trash2 size={18} />
