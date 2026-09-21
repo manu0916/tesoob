@@ -15,6 +15,13 @@
       "when": 1788894249504,
       "tag": "0001_admin_login",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1789956951257,
+      "tag": "0002_storefront",
+      "breakpoints": true
     }
   ]
 }

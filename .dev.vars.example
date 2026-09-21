@@ -4,3 +4,13 @@ TESOOB_ADMIN_EMAIL=""
 TESOOB_ADMIN_PASSWORD_HASH=""
 # These values seed the first account only when no admin exists.
 # Public self-registration is disabled; local setup closes after first use.
+
+# Vitrine D1: mesma binding DB do chat. Não precisa de Java/PostgreSQL.
+# Secret obrigatório para checkout: 32 bytes aleatórios em Base64, sem valor padrão.
+STORE_AES_KEY=""
+# Rotação opcional: JSON com chaves por ID, configurado como SECRET.
+STORE_AES_KEYS=""
+STORE_ACTIVE_KEY="v1"
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+GOOGLE_REDIRECT_URI=""

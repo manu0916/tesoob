@@ -24,11 +24,9 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -57,10 +55,22 @@ export function OrderLauncher({
   const [step, setStep] = useState<'choose' | 'chat'>('choose');
   const [chatStarted, setChatStarted] = useState(false);
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button className={className} variant="ghost" />}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (!nextOpen) setStep('choose');
+      }}
+    >
+      <Button
+        className={className}
+        variant="ghost"
+        onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+      >
         {children} <ArrowUpRight size={18} />
-      </DialogTrigger>
+      </Button>
       <DialogContent
         className={`order-dialog ${step === 'chat' ? 'order-dialog-chat' : ''}`}
         showCloseButton={false}
@@ -68,17 +78,14 @@ export function OrderLauncher({
       >
         <div className="order-dialog-top">
           <span>TESOOB / ENCOMENDAS</span>
-          <DialogClose
-            render={
-              <Button
-                className="chat-close"
-                variant="ghost"
-                aria-label="Fechar encomenda"
-              />
-            }
+          <Button
+            className="chat-close"
+            variant="ghost"
+            aria-label="Fechar encomenda"
+            onClick={() => setOpen(false)}
           >
             <X size={22} />
-          </DialogClose>
+          </Button>
         </div>
         <DialogTitle
           className={step === 'choose' ? 'order-dialog-title' : 'sr-only'}

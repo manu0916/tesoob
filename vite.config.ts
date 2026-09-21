@@ -33,7 +33,7 @@ const localBindingConfig = {
     : [],
 };
 
-export default defineConfig(async () => {
+export default defineConfig(async ({ command }) => {
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= 'false';
@@ -49,16 +49,26 @@ export default defineConfig(async () => {
       host: '0.0.0.0',
       port: 3000,
       allowedHosts: ['terminal.local'],
-      ...(isCodexSeatbeltSandbox
-        ? { watch: { useFsEvents: false, usePolling: true } }
-        : {}),
+      watch: {
+        // Generated Pages files are rebuilt atomically and must not be watched on Windows/OneDrive.
+        ignored: ['**/.pages-dist/**', '**/backend/target/**', '**/test-results/**'],
+        ...(isCodexSeatbeltSandbox ? { useFsEvents: false, usePolling: true } : {}),
+      },
     },
     plugins: [
       vinext(),
       sites(),
       cloudflare({
+        configPath: './deploy/wrangler.vite.jsonc',
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
-        config: localBindingConfig,
+        // Only isolated local QA may override persistence/secrets; never embed these in a build.
+        ...(command === 'serve' && process.env.STORE_LOCAL_TEST === '1'
+          ? { persistState: { path: '.wrangler/store-tests' } } : {}),
+        config: {
+          ...localBindingConfig,
+          ...(command === 'serve' && process.env.STORE_LOCAL_TEST === '1'
+            ? { vars: { STORE_AES_KEY: process.env.STORE_LOCAL_AES_KEY || '' } } : {}),
+        },
       }),
     ],
   };

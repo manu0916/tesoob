@@ -488,14 +488,18 @@ export async function adminOptions(request: Request) {
 }
 
 export async function isAdmin(request: Request) {
+  return !!(await adminIdentity(request));
+}
+
+export async function adminIdentity(request: Request) {
   const value = cookie(request, ADMIN_COOKIE);
-  if (!value) return false;
+  if (!value) return null;
   const db = await database();
-  return !!(await db
-    .prepare(`SELECT s.admin_id FROM chat_admin_sessions s
+  return await db
+    .prepare(`SELECT a.id, a.email FROM chat_admin_sessions s
     JOIN chat_admin_accounts a ON a.id = s.admin_id WHERE s.token_hash = ? AND s.expires_at > ?`)
     .bind(await hash(value), Date.now())
-    .first());
+    .first<{ id: string; email: string }>();
 }
 
 export async function requireAdmin(request: Request) {

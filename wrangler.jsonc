@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tesoob",
+  "pages_build_output_dir": ".pages-dist",
+  "compatibility_date": "2026-05-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "tesoob",
+    "database_id": "424b78fc-08bc-4380-b4fa-e8155b31a3cc"
+  }]
+}

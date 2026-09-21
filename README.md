@@ -1,5 +1,9 @@
 # Tesoob
 
+## Vitrine de vendas
+
+A loja em `/loja` agora usa Cloudflare Pages/D1, preservando banco e login administrativo antigos. Migração aditiva, configuração e testes estão em [STOREFRONT.md](STOREFRONT.md). Build Pages: `npm run build:pages`, saída `.pages-dist`. Registrar pedido não realiza cobrança.
+
 Site editorial com fotografias reais, três referências de looks, galeria completa, bastidores, vídeos sob demanda e consultas de encomenda.
 
 ## Desenvolvimento
@@ -34,7 +38,7 @@ O logo foi extraído fielmente do quadro de 54 segundos do reel original. A imag
 - Sem erros de execução ou arquivos HTTP ausentes durante os fluxos conferidos.
 - O envio ao WhatsApp real depende do telefone correto e permanece pendente. Nenhum botão confirma pedido ou envia mensagem automaticamente.
 
-O repositório de Sites e `.openai/hosting.json` identificam o projeto. O chat de encomendas usa o banco D1 (`DB`). Não há checkout ou cobrança automática.
+O repositório de Sites e `.openai/hosting.json` identificam o projeto. Chat e vitrine usam a mesma binding D1 (`DB`), em tabelas separadas, preservando os registros existentes. Java/PostgreSQL não são usados pelo site atual. Não há cobrança automática.
 
 ## Chat de encomendas
 
