@@ -6,9 +6,11 @@ import {
   ArrowLeft,
   ArrowUpRight,
   Check,
+  ChevronDown,
   Eye,
   EyeOff,
   Inbox,
+  Layers2,
   LockKeyhole,
   LoaderCircle,
   LogOut,
@@ -18,7 +20,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { AdminNavigation, AdminStoreAccess } from '@/components/admin-navigation';
+import { AdminStoreAccess } from '@/components/admin-navigation';
 import {
   ChatComposer,
   ChatLoading,
@@ -133,11 +135,7 @@ export function AdminOrders() {
       ) : !session ? (
         <ChatLoading />
       ) : session.authenticated ? (
-        <>
-          <AdminNavigation current="orders" />
-          <AdminStoreAccess />
-          <OrderInbox />
-        </>
+        <AdminWorkspace />
       ) : (
         <AdminLogin session={session} onAuthenticated={setSession} />
       )}
@@ -148,6 +146,60 @@ export function AdminOrders() {
         </span>
       </footer>
     </main>
+  );
+}
+
+function AdminWorkspace() {
+  const [open, setOpen] = useState<'store' | 'orders' | null>(null);
+  const [ordersVisited, setOrdersVisited] = useState(false);
+  const sections = [
+    { key: 'store', title: 'Vitrine', description: 'Gerenciar e adicionar peças', icon: Layers2 },
+    { key: 'orders', title: 'Encomendas', description: 'Conversas e atendimento', icon: MessageSquare },
+  ] as const;
+  return (
+    <div className="admin-dividers">
+      <p className="admin-dividers-hint">Escolha uma área para começar.</p>
+      {sections.map(({ key, title, description, icon: Icon }) => (
+        <div className="admin-divider" key={key}>
+          <h2>
+            <button
+              type="button"
+              id={`admin-${key}-toggle`}
+              className="admin-divider-toggle"
+              aria-expanded={open === key}
+              aria-controls={`admin-${key}-panel`}
+              aria-labelledby={`admin-${key}-label`}
+              onClick={() => {
+                setOpen((previous) => previous === key ? null : key);
+                if (key === 'orders') setOrdersVisited(true);
+              }}
+            >
+              <Icon size={22} strokeWidth={1.5} aria-hidden="true" />
+              <span>
+                <span id={`admin-${key}-label`} className="admin-divider-title">{title}</span>
+                <span className="admin-divider-description">{description}</span>
+              </span>
+              <ChevronDown className="admin-divider-chevron" size={22} aria-hidden="true" />
+            </button>
+          </h2>
+          <section
+            id={`admin-${key}-panel`}
+            aria-labelledby={`admin-${key}-label`}
+            className="admin-divider-panel"
+            hidden={open !== key}
+          >
+            {key === 'store' ? (
+              <>
+                <AdminStoreAccess />
+                <Link href="/loja" className="admin-divider-preview">
+                  Ver vitrine no site <ArrowUpRight size={16} aria-hidden="true" />
+                </Link>
+              </>
+            ) : ordersVisited ? <OrderInbox /> : null}
+          </section>
+        </div>
+      ))}
+    </div>
   );
 }
 

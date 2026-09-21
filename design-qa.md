@@ -110,3 +110,14 @@ final result: blocked
 - Review the authenticated panel with real catalog content after deployment. The source screenshot's exact zoom/device scale was unavailable, so pixel-level comparison is intentionally out of scope.
 
 final result: passed
+
+## Follow-up: collapsed admin sections
+
+- User requested that management options stay hidden until clicked. `/admin` now opens with two closed dividers: Vitrine and Encomendas. Only one section can be expanded at a time; clicking it again closes it.
+- Existing brand typography, colors, header and footer are preserved. The product-management page remains unchanged.
+- Reviewed closed-state screenshots at 390 × 1000 and 1440 × 1000, density 1: `test-results/store/admin-workspace-acesso-à-vitrine-e-edição-de-peças-390px-/admin-closed-390.png` and the equivalent `1440px-` directory / `admin-closed-1440.png`. No clipping or horizontal overflow observed.
+- Native buttons expose expanded state and associated labelled sections; hidden contents cannot be reached by keyboard. Enter and Space toggle the sections. Chevron motion respects reduced-motion preferences.
+- The inbox is mounted only after its first opening and remains mounted when hidden, preserving filters and in-progress component state. The test confirms that the search field survives section switching and both sections reset closed on reload.
+- Verification: 4 local browser tests passed with intercepted API fixtures. Build, TypeScript and lint passed. No production database changes or deployment performed for this follow-up.
+
+final result: passed

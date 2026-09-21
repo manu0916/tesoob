@@ -36,9 +36,14 @@ for (const width of [390, 1440]) {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await page.goto('/admin');
+    await expect(page.getByRole('button', { name: 'Vitrine', exact: true })).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByRole('button', { name: 'Encomendas', exact: true })).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByRole('link', { name: 'Gerenciar peças' })).toBeHidden();
+    await page.evaluate(() => document.fonts.ready);
+    await page.screenshot({ path: info.outputPath(`admin-closed-${width}.png`), fullPage: true });
+    await page.getByRole('button', { name: 'Vitrine', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'SUA VITRINE.' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'ENCOMENDAS', exact: true })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Encomendas', exact: true })).toHaveAttribute('aria-current', 'page');
+    await expect(page.getByRole('region', { name: 'Encomendas', exact: true })).toBeHidden();
     await page.evaluate(() => document.fonts.ready);
     await noOverflow(page);
     await page.screenshot({ path: info.outputPath(`admin-${width}.png`), fullPage: true });
@@ -52,6 +57,7 @@ for (const width of [390, 1440]) {
     await expect(page.getByRole('button', { name: 'Editar Peça de prévia' })).toBeFocused();
     await noOverflow(page);
     await page.getByRole('link', { name: 'Encomendas', exact: true }).click();
+    await page.getByRole('button', { name: 'Vitrine', exact: true }).click();
     await page.getByRole('link', { name: 'Adicionar peça' }).click();
     await expect(page.getByRole('region', { name: 'Nova peça', exact: true })).toBeVisible();
     await expect(page.getByRole('textbox', { name: 'Nome', exact: true })).toBeFocused();
@@ -77,4 +83,37 @@ test('atalhos não aparecem sem sessão e novo produto preserva destino no login
   await page.goto('/admin/produtos?novo=1');
   await expect(page.getByRole('region', { name: 'Nova peça', exact: true })).toHaveCount(0);
   await expect(page.getByRole('link', { name: /Entrar como administrador/ })).toHaveAttribute('href', '/loja/conta?next=%2Fadmin%2Fprodutos%3Fnovo%3D1');
+});
+
+test('divisórias abrem por teclado, fecham entre si e preservam filtros', async ({ page }, info) => {
+  let orderReads = 0;
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/api/admin/conversations') orderReads++;
+  });
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto('/admin');
+  const store = page.getByRole('button', { name: 'Vitrine', exact: true });
+  const orders = page.getByRole('button', { name: 'Encomendas', exact: true });
+  await expect(orders).toBeVisible();
+  expect(orderReads).toBe(0);
+  await orders.focus();
+  await orders.press('Enter');
+  await expect(orders).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByLabel('Buscar encomendas')).toBeVisible();
+  await page.getByLabel('Buscar encomendas').fill('Busca mantida');
+  await page.screenshot({ path: info.outputPath('admin-orders-open.png'), fullPage: true });
+  await store.click();
+  await expect(orders).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByLabel('Buscar encomendas')).toBeHidden();
+  await expect(page.getByRole('link', { name: 'Gerenciar peças' })).toBeVisible();
+  await orders.click();
+  await expect(store).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByLabel('Buscar encomendas')).toHaveValue('Busca mantida');
+  await orders.press('Space');
+  await expect(orders).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByLabel('Buscar encomendas')).toBeHidden();
+  await page.reload();
+  await expect(store).toHaveAttribute('aria-expanded', 'false');
+  await expect(orders).toHaveAttribute('aria-expanded', 'false');
+  await noOverflow(page);
 });
