@@ -10,10 +10,10 @@ import {
   ArrowUpRight,
   Check,
   Copy,
-  Menu,
   Minus,
   Play,
   Plus,
+  UserRound,
   X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -95,34 +95,6 @@ export function ContactLink({
 }
 
 export function SiteHeader() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navigation = [
-    ['Peças', 'pecas'],
-    ['Editorial', 'editorial'],
-    ['Processo', 'processo'],
-    ['Encomendar', 'encomendar'],
-  ] as const;
-
-  function navigateToSection(id: string) {
-    const target = document.getElementById(id);
-    setMenuOpen(false);
-
-    if (!target) {
-      window.location.assign(`/#${id}`);
-      return;
-    }
-
-    window.history.replaceState(null, '', `#${id}`);
-    window.setTimeout(() => {
-      target.scrollIntoView({
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-          ? 'auto'
-          : 'smooth',
-        block: 'start',
-      });
-    }, 160);
-  }
-
   return (
     <header className="site-header">
       <Link href="/" aria-label="Tesoob, início">
@@ -148,66 +120,10 @@ export function SiteHeader() {
       </nav>
       <div className="header-right">
         <OrderLauncher className="header-contact">Encomendar</OrderLauncher>
-        <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
-          <Button
-            className="menu-button"
-            variant="ghost"
-            aria-label="Abrir menu"
-            aria-haspopup="dialog"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen(true)}
-          >
-            <span className="menu-label">Menu</span>
-            <Menu size={22} />
-          </Button>
-          <DialogContent
-            className="mobile-menu"
-            showCloseButton={false}
-            fullScreen
-          >
-            <DialogTitle className="sr-only">Navegação Tesoob</DialogTitle>
-            <DialogDescription className="sr-only">
-              Explore as peças, o editorial e os bastidores.
-            </DialogDescription>
-            <Button
-              className="icon-button menu-close"
-              variant="ghost"
-              aria-label="Fechar menu"
-              onClick={() => setMenuOpen(false)}
-            >
-              <X />
-            </Button>
-            <div className="mobile-menu-masthead">
-              <img
-                src="/media/logo-tesoob.png"
-                alt="Tesoob"
-                width="160"
-                height="33"
-              />
-              <span>Navegação / 2026</span>
-            </div>
-            <nav aria-label="Menu móvel">
-              {navigation.map(([label, id], i) => (
-                <button
-                  type="button"
-                  key={id}
-                  className="mobile-menu-link"
-                  onClick={() => navigateToSection(id)}
-                >
-                  <small>0{i + 1}</small>
-                  <span>{label}</span>
-                  <span className="mobile-menu-arrow" aria-hidden="true">
-                    <ArrowUpRight />
-                  </span>
-                </button>
-              ))}
-            </nav>
-            <div className="mobile-menu-footer">
-              <Link href="/loja" onClick={() => setMenuOpen(false)}>Visitar a vitrine <ArrowUpRight size={18} /></Link>
-              <span>Peças exclusivas / Feitas para marcar</span>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Link href="/loja/conta" className="menu-button" aria-label="Contas">
+          <span className="menu-label">Contas</span>
+          <UserRound size={22} />
+        </Link>
       </div>
     </header>
   );

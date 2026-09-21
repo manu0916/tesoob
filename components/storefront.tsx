@@ -7,6 +7,8 @@ import {
   ArrowUpRight,
   ArrowLeft,
   ArrowRight,
+  ShoppingBag,
+  Trash2,
   RefreshCw,
   ShieldCheck,
   UserRound,
@@ -79,10 +81,31 @@ export function ProductImage({
   );
 }
 export function Storefront() {
+  const [cart, setCart] = useState<Product[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
   const [catalog, setCatalog] = useState<ProductPage | null>(null);
   const [page, setPage] = useState(0);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState('');
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('tesoob:cart') || '[]');
+        if (Array.isArray(saved)) setCart(saved);
+      } catch {
+        localStorage.removeItem('tesoob:cart');
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  function updateCart(next: Product[]) {
+    setCart(next);
+    localStorage.setItem('tesoob:cart', JSON.stringify(next));
+  }
+  function addToCart(product: Product) {
+    if (!cart.some((item) => item.id === product.id)) updateCart([...cart, product]);
+    setCartOpen(true);
+  }
   useEffect(() => {
     const controller = new AbortController();
     storeApi<ProductPage>(`/products?page=${page}`, {
@@ -106,7 +129,54 @@ export function Storefront() {
         <Link href="/loja/conta">
           <UserRound size={16} /> Minha conta
         </Link>
+        <button
+          type="button"
+          className="store-cart-trigger"
+          aria-expanded={cartOpen}
+          aria-controls="store-cart"
+          onClick={() => setCartOpen((open) => !open)}
+        >
+          <ShoppingBag size={16} /> Carrinho <span>{cart.length}</span>
+        </button>
       </div>
+      {cartOpen && (
+        <aside id="store-cart" className="store-cart" aria-label="Carrinho">
+          <div className="store-cart-heading">
+            <div>
+              <p className="store-kicker">SUA SELEÇÃO</p>
+              <h2>CARRINHO</h2>
+            </div>
+            <button type="button" onClick={() => setCartOpen(false)}>
+              Fechar
+            </button>
+          </div>
+          {!cart.length ? (
+            <p className="store-fine-print">Sua seleção ainda está vazia.</p>
+          ) : (
+            <div className="store-cart-items">
+              {cart.map((product) => (
+                <article key={product.id}>
+                  <img src={product.imageUrl} alt="" />
+                  <div>
+                    <h3>{product.name}</h3>
+                    <p>{money(product.price)}</p>
+                    <Link href={`/loja/checkout/${product.id}`}>
+                      Finalizar esta peça <ArrowUpRight size={15} />
+                    </Link>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label={`Remover ${product.name} do carrinho`}
+                    onClick={() => updateCart(cart.filter((item) => item.id !== product.id))}
+                  >
+                    <Trash2 size={17} />
+                  </button>
+                </article>
+              ))}
+            </div>
+          )}
+        </aside>
+      )}
       <header className="store-intro">
         <div>
           <p className="store-kicker">TESOOB / SELEÇÃO AUTORAL</p>
@@ -191,6 +261,16 @@ export function Storefront() {
                   >
                     Conhecer a peça <ArrowUpRight size={17} />
                   </Link>
+                  <button
+                    type="button"
+                    className="store-add-to-cart"
+                    onClick={() => addToCart(product)}
+                  >
+                    <ShoppingBag size={16} />
+                    {cart.some((item) => item.id === product.id)
+                      ? 'Na sua seleção'
+                      : 'Adicionar ao carrinho'}
+                  </button>
                 </div>
               </article>
             ))}

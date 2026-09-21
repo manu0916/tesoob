@@ -23,6 +23,7 @@ const JWKS = createRemoteJWKSet(
 type UserRow = {
   id: string;
   email: string;
+  display_name: string | null;
   password_hash: string | null;
   google_id: string | null;
   enabled: number;
@@ -78,7 +79,7 @@ export async function localAuth(
   data: Record<string, unknown>,
   registering: boolean,
 ) {
-  const { email, password } = credentials(data, registering);
+  const { email, name, password } = credentials(data, registering);
   await throttle(db, request, 'auth-ip', 15);
   await throttle(db, request, 'auth-email', 15, email);
   const admin = await db
@@ -99,9 +100,9 @@ export async function localAuth(
     const passwordHash = await hashPassword(password);
     const result = await db
       .prepare(
-        `INSERT INTO store_users(id,email,password_hash,created_at) VALUES (?,?,?,?) ON CONFLICT(email) DO NOTHING`,
+        `INSERT INTO store_users(id,email,display_name,password_hash,created_at) VALUES (?,?,?,?,?) ON CONFLICT(email) DO NOTHING`,
       )
-      .bind(id, email, passwordHash, Date.now())
+      .bind(id, email, name, passwordHash, Date.now())
       .run();
     if (!result.meta.changes)
       return fail(409, 'Não foi possível cadastrar este e-mail.');

@@ -13,6 +13,7 @@ export const storeUsers = sqliteTable(
   {
     id: text('id').primaryKey(),
     email: text('email').notNull().unique(),
+    displayName: text('display_name'),
     passwordHash: text('password_hash'),
     googleId: text('google_id').unique(),
     enabled: integer('enabled').notNull().default(1),

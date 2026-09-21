@@ -43,6 +43,82 @@
   padding-bottom: 30px;
   border-bottom: 1px solid var(--border);
 }
+.store-cart-trigger,
+.store-add-to-cart,
+.store-cart > button,
+.store-cart-heading > button,
+.store-cart-items > article > button {
+  border: 0;
+  background: transparent;
+  color: var(--paper);
+}
+.store-cart-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 11px;
+}
+.store-cart-trigger span {
+  display: grid;
+  place-items: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 50%;
+  background: var(--store-accent);
+  color: #fff3e8;
+  font-size: 9px;
+}
+.store-cart {
+  position: fixed;
+  z-index: 20;
+  top: 88px;
+  right: 5%;
+  width: min(410px, 88vw);
+  max-height: min(70vh, 620px);
+  overflow: auto;
+  padding: 25px;
+  border: 1px solid #ffffff24;
+  background: #10130fee;
+  box-shadow: 0 22px 65px #0008;
+  backdrop-filter: blur(24px);
+}
+.store-cart-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.store-cart-heading .store-kicker { margin-bottom: 7px; }
+.store-cart-heading h2 { font-size: 34px; }
+.store-cart-heading > button { font-size: 11px; padding: 8px 0; }
+.store-cart-items > article {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 32px;
+  gap: 14px;
+  align-items: start;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.store-cart-items img { width: 72px; height: 88px; object-fit: cover; }
+.store-cart-items h3 { font-size: 23px; line-height: 1; overflow-wrap: anywhere; }
+.store-cart-items p { margin-top: 7px; font-size: 12px; }
+.store-cart-items a { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 10px; color: #d4d8c8; }
+.store-cart-items > article > button { display: grid; place-items: center; width: 32px; height: 32px; color: #d8a091; }
+.store-add-to-cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  margin: 15px 0 0 18px;
+  padding: 12px 0;
+  border-bottom: 1px solid #64685a;
+  font-size: 11px;
+}
+.store-add-to-cart:hover { color: #f29b83; }
 .store-toolbar a,
 .store-back {
   min-height: 44px;

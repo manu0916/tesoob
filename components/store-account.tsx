@@ -94,6 +94,7 @@ export function StoreAccount() {
     setNotice('');
     try {
       const payload = {
+        ...(register ? { name: formText(data, 'name') } : {}),
         email: formText(data, 'email'),
         password: formText(data, 'password'),
       };
@@ -262,6 +263,17 @@ export function StoreAccount() {
             </div>
             <h2>{register ? 'Um novo começo.' : 'Bom ter você aqui.'}</h2>
             <form onSubmit={submit}>
+              {register && (
+                <label>
+                  Nome
+                  <input
+                    name="name"
+                    autoComplete="name"
+                    required
+                    maxLength={140}
+                  />
+                </label>
+              )}
               <label>
                 E-mail
                 <input

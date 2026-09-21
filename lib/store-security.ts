@@ -124,8 +124,9 @@ export function credentials(
   data: Record<string, unknown>,
   registering: boolean,
 ) {
-  fields(data, ['email', 'password']);
+  fields(data, registering ? ['name', 'email', 'password'] : ['email', 'password']);
   const email = textField(data, 'email', 254).toLowerCase();
+  const name = registering ? textField(data, 'name', 140) : '';
   const password = data.password;
   if (
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
@@ -137,7 +138,7 @@ export function credentials(
       400,
       'Informe e-mail válido e senha de 12+ caracteres (até 72 bytes).',
     );
-  return { email, password };
+  return { email, name, password };
 }
 export const hashPassword = (password: string) => bcrypt.hash(password, 12);
 export const verifyPassword = (password: string, hash: string) =>

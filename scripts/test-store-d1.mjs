@@ -181,6 +181,7 @@ try {
   const buyer = client(),
     other = client(),
     email = `qa-${randomUUID()}@example.test`,
+      name = 'Cliente de Teste',
     password = randomBytes(18).toString('hex');
   check(
     (
@@ -193,16 +194,20 @@ try {
     'public role injection rejected',
   );
   check(
-    (await buyer('/store-api/auth/register', { email, password })).status ===
-      201,
+    (
+      await buyer('/store-api/auth/register', { name, email, password })
+    ).status === 201,
     'customer registration',
   );
   check(
     db
-      .prepare('SELECT password_hash FROM store_users WHERE email=?')
+      .prepare('SELECT password_hash,display_name FROM store_users WHERE email=?')
       .get(email)
-      .password_hash.startsWith('$2b$12$'),
-    'customer password stored as BCrypt cost 12',
+      .password_hash.startsWith('$2b$12$') &&
+      db
+        .prepare('SELECT display_name FROM store_users WHERE email=?')
+        .get(email).display_name === name,
+    'customer name and BCrypt password stored',
   );
   const signedIn = await buyer('/store-api/auth/login', { email, password });
   check(
