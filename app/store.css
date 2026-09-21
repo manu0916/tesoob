@@ -292,41 +292,35 @@
   border-color: #ffffff60;
 }
 .store-magnetic {
-  display: flex;
-  width: min(100%, 325px);
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 48px;
   align-items: center;
-  justify-content: space-between;
-  gap: 17px;
-  padding: 18px 20px;
+  gap: 18px;
+  padding: 4px 0;
   margin-top: 23px;
   color: var(--paper);
-  background: linear-gradient(115deg, #ce412432, #ffffff08);
-  border: 1px solid #d868485e;
-  box-shadow:
-    0 10px 40px #9f2a1610,
-    inset 0 1px #ffffff14;
-  backdrop-filter: blur(18px);
-  transform: translate(var(--magnet-x, 0px), var(--magnet-y, 0px));
-  transition:
-    transform 0.2s,
-    border-color 0.2s,
-    box-shadow 0.2s;
-  font-size: 13px;
+  font-family: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+  font-size: clamp(28px, 2.4vw, 34px);
   font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transition: color 0.18s;
 }
-.store-magnetic:hover {
-  border-color: #f28a63;
-  box-shadow: 0 10px 40px #9f2a1630;
+.store-magnetic > svg {
+  flex: none;
+  color: var(--red);
+  transition: transform 0.18s;
 }
-.store-magnetic small {
-  display: block;
-  margin-top: 5px;
-  font-size: 9px;
-  font-weight: 400;
-  color: #b6b8ac;
+.store-magnetic:hover,
+.store-magnetic:focus-visible {
+  color: var(--red);
 }
-.store-magnetic > span {
-  flex: 1;
+.store-magnetic:hover > svg,
+.store-magnetic:focus-visible > svg {
+  transform: translate(2px, -2px);
 }
 .mobile-menu-footer > a {
   display: flex;
@@ -1110,7 +1104,6 @@
   }
   .store-magnetic {
     margin-top: 20px;
-    padding: 15px 17px;
   }
   .store-form-grid {
     grid-template-columns: 1fr;
@@ -1124,6 +1117,7 @@
   .store-card-image img,
   .store-button,
   .store-magnetic,
+  .store-magnetic > svg,
   .store-card-arrow {
     transition: none;
     transform: none !important;

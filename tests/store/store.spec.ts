@@ -187,7 +187,7 @@ test('CTA inicial e todas as ações do menu móvel navegam e fecham o diálogo'
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  await page.getByRole('link', { name: /Entrar na vitrine/ }).click();
+  await page.getByRole('link', { name: 'Ver vitrine', exact: true }).click();
   await expect(page).toHaveURL(/\/loja$/);
   for (const [name, hash] of [
     ['Peças', 'pecas'],

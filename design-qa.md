@@ -39,3 +39,34 @@
 - P3: a final tap-through on the exact Android/Chrome device from the reference would be useful for device-specific dynamic viewport behavior, but no blocking visual or implementation issue remains.
 
 final result: passed
+
+---
+
+## Storefront hero CTA — 2026-09-21
+
+### Comparison target and evidence
+
+- Source visual truth: `C:\Users\monse\.codex\generated_images\01a0bf15-f999-73e2-b657-8c24eee77d82\exec-b2eecb36-1dc3-4b01-93ab-d9c340efb5bc.png` (third proposed direction, selected after the user delegated the choice).
+- Source pixels: 1774 × 887; cropped hero concept, not a full-page viewport reference.
+- Implementation URL: `http://127.0.0.1:4189/`.
+- State: home hero, signed out; the change is limited to the storefront CTA.
+- Implementation screenshot, viewport, pixel dimensions and density: unavailable. The in-app browser returned `Browser is not available: iab`, and browser inventory was empty.
+- Full-view and focused-region visual comparisons: pending; no rendered screenshot was available. No visual-match claim is made.
+
+### Findings
+
+- [P1 verification blocker] Browser-rendered desktop/mobile evidence and actual click verification remain pending. Connect a supported browser or obtain permission to use a browser-testing fallback, then capture and compare the hero CTA with the selected concept.
+- Typography: implementation reuses Barlow Condensed, bold, uppercase, responsive 28–34 px. Visual verification pending.
+- Spacing/layout: inline text-and-arrow link, minimum height 48 px; the old card, subtitle, bag icon and magnetic movement were removed. Surrounding hero is unchanged. Visual verification pending.
+- Colors/tokens: existing paper and red tokens; gradient, blur and card border removed. Visual verification pending.
+- Image/asset fidelity: no new raster asset; existing Lucide northeast-arrow icon reused. Visual verification pending.
+- Copy/content: `Ver vitrine`, destination `/loja`, confirmed in server-rendered HTML.
+
+### Checks and comparison history
+
+- Production Pages build, lint and TypeScript checks passed.
+- Local home returned HTTP 200. Returned markup contains a native anchor with `href="/loja"`, the new label and decorative arrow.
+- Reduced-motion handling and existing keyboard-focus styling are preserved in code; browser interaction and console checks remain unverified.
+- No visual comparison iteration has been completed. No deployment was performed for this adjustment.
+
+final result: blocked
