@@ -745,6 +745,75 @@
   height: min(800px, 85dvh);
   min-height: 560px;
 }
+.admin-workspace-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.admin-workspace-nav > div { display: flex; gap: 24px; }
+.admin-workspace-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 52px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  border-bottom: 2px solid transparent;
+}
+.admin-workspace-nav a:hover { color: var(--paper); }
+.admin-workspace-nav a[aria-current='page'] {
+  color: var(--paper);
+  border-bottom-color: var(--red);
+}
+.admin-store-access {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 32px;
+  padding: 30px 32px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  background: var(--card);
+}
+.admin-store-copy h2 {
+  font-family: 'Barlow Condensed', Impact, sans-serif;
+  font-size: clamp(36px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  margin: 12px 0;
+}
+.admin-store-copy > p:last-child {
+  max-width: 360px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.admin-store-controls { display: grid; gap: 10px; min-width: 200px; }
+.admin-store-controls a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 20px;
+  min-height: 48px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.admin-store-manage { background: var(--primary); color: var(--paper); }
+.admin-store-manage:hover { background: #9d2018; }
+.admin-store-add { border: 1px solid var(--border); color: var(--paper); }
+.admin-store-add:hover { border-color: var(--paper); }
+@media (max-width: 700px) {
+  .admin-workspace-nav { flex-wrap: wrap; gap: 0 16px; }
+  .admin-workspace-nav > div { gap: 20px; }
+  .admin-workspace-nav a { font-size: 11px; gap: 6px; }
+  .admin-store-access { grid-template-columns: 1fr; gap: 24px; padding: 24px; }
+  .admin-store-controls { min-width: 0; }
+}
 .admin-list-pane {
   display: flex;
   flex-direction: column;

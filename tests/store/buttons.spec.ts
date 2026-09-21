@@ -56,9 +56,9 @@ for (const width of [390, 1440]) {
     await expect(page).toHaveURL(/\/loja$/);
     await page.getByRole('link', { name: 'Área do ateliê' }).click();
     await expect(page).toHaveURL(/\/admin$/);
-    await page
-      .getByRole('link', { name: /Gerenciar vitrine de vendas/ })
-      .click();
+    await expect(page.getByRole('button', { name: 'Entrar no painel' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Gerenciar peças' })).toHaveCount(0);
+    await page.goto('/admin/produtos');
     await expect(page).toHaveURL(/\/admin\/produtos$/);
     await page.getByRole('link', { name: /Entrar como administrador/ }).click();
     await expect(page).toHaveURL(/\/loja\/conta\?next=%2Fadmin%2Fprodutos$/);

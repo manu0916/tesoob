@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AdminNavigation, AdminStoreAccess } from '@/components/admin-navigation';
 import {
   ChatComposer,
   ChatLoading,
@@ -93,7 +94,7 @@ export function AdminOrders() {
             alt="Tesoob"
           />
         </Link>
-        <span>ATELIÊ / ENCOMENDAS</span>
+        <span>ATELIÊ / ADMINISTRAÇÃO</span>
         {session?.authenticated ? (
           <Button
             className="admin-logout"
@@ -132,7 +133,11 @@ export function AdminOrders() {
       ) : !session ? (
         <ChatLoading />
       ) : session.authenticated ? (
-        <OrderInbox />
+        <>
+          <AdminNavigation current="orders" />
+          <AdminStoreAccess />
+          <OrderInbox />
+        </>
       ) : (
         <AdminLogin session={session} onAuthenticated={setSession} />
       )}

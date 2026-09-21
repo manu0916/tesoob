@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, type SubmitEvent } from 'react';
+import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { SiteLink as Link } from '@/components/site-link';
 import {
   ArrowLeft,
@@ -11,6 +11,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { StoreFrame, StoreNotice, ProductImage } from '@/components/storefront';
+import { AdminNavigation } from '@/components/admin-navigation';
 import {
   storeApi,
   storeMessage,
@@ -33,10 +34,21 @@ export function StoreAdmin() {
   const [notice, setNotice] = useState('');
   const [page, setPage] = useState(0);
   const [revision, setRevision] = useState(0);
+  const editor = useRef<HTMLElement>(null);
+  const editorTrigger = useRef<HTMLButtonElement | null>(null);
+  const [createRequested, setCreateRequested] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
+    const openNew = new URLSearchParams(window.location.search).get('novo') === '1';
     storeApi<StoreUser>('/auth/me', { signal: controller.signal })
-      .then(setUser)
+      .then((account) => {
+        if (controller.signal.aborted) return;
+        setUser(account);
+        if (account.role === 'ADMIN' && openNew) {
+          setEditing('new');
+          window.history.replaceState(null, '', '/admin/produtos');
+        }
+      })
       .catch((e) => {
         if (
           !controller.signal.aborted &&
@@ -45,10 +57,22 @@ export function StoreAdmin() {
           setError(storeMessage(e));
       })
       .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
+        if (!controller.signal.aborted) {
+          setCreateRequested(openNew);
+          setLoading(false);
+        }
       });
     return () => controller.abort();
   }, []);
+  useEffect(() => {
+    if (!editing) return;
+    editor.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    editor.current?.querySelector<HTMLInputElement>('input[name="name"]')?.focus({ preventScroll: true });
+  }, [editing, loading]);
+  function closeEditor() {
+    setEditing(null);
+    editorTrigger.current?.focus();
+  }
   useEffect(() => {
     if (user?.role !== 'ADMIN') return;
     const controller = new AbortController();
@@ -122,6 +146,7 @@ export function StoreAdmin() {
       <Link href="/admin" className="store-back">
         <ArrowLeft size={16} /> Atendimento do ateliê
       </Link>
+      {user?.role === 'ADMIN' && <AdminNavigation current="products" />}
       <header className="store-admin-heading">
         <div>
           <p className="store-kicker">ATELIÊ / GESTÃO DA VITRINE</p>
@@ -133,7 +158,8 @@ export function StoreAdmin() {
         </div>
         {user?.role === 'ADMIN' && (
           <button
-            onClick={() => {
+            onClick={(event) => {
+              editorTrigger.current = event.currentTarget;
               setEditing('new');
               setError('');
               setNotice('');
@@ -150,7 +176,7 @@ export function StoreAdmin() {
         <StoreNotice>
           <Link
             className="store-button"
-            href="/loja/conta?next=%2Fadmin%2Fprodutos"
+            href={createRequested ? '/loja/conta?next=%2Fadmin%2Fprodutos%3Fnovo%3D1' : '/loja/conta?next=%2Fadmin%2Fprodutos'}
           >
             Entrar como administrador <ArrowUpRight size={18} />
           </Link>
@@ -183,7 +209,7 @@ export function StoreAdmin() {
             </div>
           )}
           {editing && (
-            <section className="store-glass store-editor">
+            <section ref={editor} className="store-glass store-editor" aria-label={product ? 'Editar produto' : 'Nova peça'}>
               <div className="store-editor-header">
                 <h2>{product ? 'Editar produto' : 'Nova peça'}</h2>
                 <button
@@ -191,7 +217,7 @@ export function StoreAdmin() {
                   className="store-icon-button"
                   aria-label="Fechar edição"
                   disabled={busy}
-                  onClick={() => setEditing(null)}
+                  onClick={closeEditor}
                 >
                   <X />
                 </button>
@@ -333,14 +359,15 @@ export function StoreAdmin() {
                   </div>
                   <div className="store-admin-actions">
                     <button
-                      className="store-icon-button"
+                      className="store-admin-edit"
                       aria-label={`Editar ${item.name}`}
-                      onClick={() => {
+                      onClick={(event) => {
+                        editorTrigger.current = event.currentTarget;
                         setEditing(item);
                         setError('');
                       }}
                     >
-                      <Pencil size={18} />
+                      <Pencil size={16} aria-hidden="true" /> Editar
                     </button>
                     <button
                       className="store-icon-button"

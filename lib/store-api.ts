@@ -99,7 +99,7 @@ export function formText(data: FormData, key: string) {
 export function safeReturn(value: string | null) {
   return value &&
     (/^\/loja\/checkout\/[a-f0-9-]{36}$/.test(value) ||
-      value === '/admin/produtos')
+      value === '/admin/produtos' || value === '/admin/produtos?novo=1')
     ? value
     : '/loja';
 }
