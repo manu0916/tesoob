@@ -501,13 +501,24 @@ figure {
   align-items: center;
   gap: 24px;
 }
-.menu-button {
-  display: none !important;
+.account-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  color: var(--paper);
+  font-size: 12px;
 }
-.menu-label {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
+.account-link:hover {
+  border-color: #74776b;
+  background: var(--muted);
+}
+.account-link-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
 }
 .hero-contact {
@@ -1785,24 +1796,9 @@ figure {
   .header-right {
     gap: 10px;
   }
-  .menu-button {
-    display: inline-flex !important;
-    min-width: 58px !important;
-    height: 44px !important;
-    gap: 7px !important;
-    padding: 0 10px !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    color: var(--paper) !important;
-  }
-  .menu-button:hover {
-    border-color: #74776b !important;
-    background: var(--muted) !important;
-  }
-  .menu-button svg {
-    width: 19px !important;
-    height: 19px !important;
+  .account-link {
+    min-width: 44px;
+    padding: 0 10px;
   }
   .header-contact {
     font-size: 10px;
@@ -2288,11 +2284,12 @@ figure {
   }
 }
 @media (max-width: 359px) {
-  .menu-label {
+  .account-link-label {
     display: none;
   }
-  .menu-button {
-    min-width: 44px !important;
+  .account-link {
+    padding: 0;
+    justify-content: center;
   }
   .header-contact {
     font-size: 9px;

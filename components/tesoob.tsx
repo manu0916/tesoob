@@ -120,9 +120,9 @@ export function SiteHeader() {
       </nav>
       <div className="header-right">
         <OrderLauncher className="header-contact">Encomendar</OrderLauncher>
-        <Link href="/loja/conta" className="menu-button" aria-label="Contas">
-          <span className="menu-label">Contas</span>
-          <UserRound size={22} />
+        <Link href="/loja/conta" className="account-link" aria-label="Contas">
+          <UserRound size={18} />
+          <span className="account-link-label">Contas</span>
         </Link>
       </div>
     </header>
