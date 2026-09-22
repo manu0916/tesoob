@@ -12,6 +12,7 @@ type OrderRow = {
   id: string;
   user_id: string;
   product_name: string;
+  product_size: string | null;
   quantity: number;
   total_cents: number;
   currency: string;
@@ -19,9 +20,38 @@ type OrderRow = {
   created_at: number;
   checkout_ciphertext: string;
 };
+export type StoreOrderStatus =
+  | 'AWAITING_INTEGRATION'
+  | 'PENDING_PAYMENT'
+  | 'PAID'
+  | 'CANCELLED';
+
+type AdminOrderRow = OrderRow & {
+  customer_name: string | null;
+  customer_email: string;
+};
+
+const adminView = (row: AdminOrderRow) => ({
+  ...view(row),
+  customerName: row.customer_name?.trim() || row.customer_email.split('@')[0],
+  customerEmail: row.customer_email,
+});
+
+const dashboardStatuses = new Set([
+  'ALL',
+  'AWAITING_INTEGRATION',
+  'PENDING_PAYMENT',
+  'PAID',
+  'CANCELLED',
+]);
+
+function likeTerm(value: string) {
+  return `%${value.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_')}%`;
+}
 const view = (row: OrderRow) => ({
   id: row.id,
   productName: row.product_name,
+  productSize: row.product_size,
   quantity: row.quantity,
   total: row.total_cents / 100,
   currency: row.currency,
@@ -48,7 +78,7 @@ function validCpf(value: string) {
   return true;
 }
 function checkoutInput(data: Record<string, unknown>) {
-  fields(data, ['productId', 'productVersion', 'quantity', 'billing']);
+  fields(data, ['productId', 'productVersion', 'quantity', 'size', 'billing']);
   if (!uuid(data.productId)) return fail(400, 'Produto inválido.');
   const quantity = integer(data.quantity, 1, 10),
     productVersion = integer(data.productVersion, 0, Number.MAX_SAFE_INTEGER);
@@ -93,6 +123,7 @@ function checkoutInput(data: Record<string, unknown>) {
     productId: data.productId as string,
     productVersion,
     quantity,
+    size: textField(data, 'size', 24, true) || null,
     billing,
   };
 }
@@ -120,13 +151,21 @@ export async function createOrder(
   // One atomic SQL statement snapshots server price, checks version and deduplicates.
   // No read-then-write race and no unsupported BEGIN transaction across D1 requests.
   const row = await db
-    .prepare(`INSERT INTO store_orders(id,user_id,product_id,product_name,quantity,unit_price_cents,total_cents,checkout_ciphertext,idempotency_key,created_at)
-    SELECT ?,?,id,name,?,price_cents,price_cents*?,?,?,? FROM store_products
-    WHERE id=? AND active=1 AND version=? AND EXISTS (SELECT 1 FROM store_users WHERE id=? AND enabled=1)
+    .prepare(`INSERT INTO store_orders(id,user_id,product_id,product_name,product_size,quantity,unit_price_cents,total_cents,checkout_ciphertext,idempotency_key,created_at)
+    SELECT ?,?,id,name,?,?,price_cents,price_cents*?,?,?,? FROM store_products
+    WHERE id=? AND active=1 AND version=?
+      AND (drop_id IS NULL OR EXISTS (
+        SELECT 1 FROM store_drops d WHERE d.id=store_products.drop_id AND d.cancelled_at IS NULL AND d.launches_at<=?
+      ))
+      AND ((sizes_json='[]' AND ? IS NULL) OR (? IS NOT NULL AND EXISTS (
+        SELECT 1 FROM json_each(store_products.sizes_json) WHERE value=?
+      )))
+      AND EXISTS (SELECT 1 FROM store_users WHERE id=? AND enabled=1)
     ON CONFLICT(user_id,idempotency_key) DO NOTHING RETURNING *`)
     .bind(
       id,
       userId,
+      input.size,
       input.quantity,
       input.quantity,
       encrypted,
@@ -134,6 +173,10 @@ export async function createOrder(
       Date.now(),
       input.productId,
       input.productVersion,
+      Date.now(),
+      input.size,
+      input.size,
+      input.size,
       userId,
     )
     .first<OrderRow>();
@@ -188,4 +231,114 @@ export async function listOrders(db: D1Database, userId: string, page: number) {
     page,
     totalPages: Math.ceil(Number((count.results[0] as { n: number }).n) / 12),
   };
+}
+
+export async function adminDashboard(
+  db: D1Database,
+  page: number,
+  requestedStatus: string,
+  requestedQuery: string,
+) {
+  const status = dashboardStatuses.has(requestedStatus)
+    ? requestedStatus
+    : 'ALL';
+  const query = requestedQuery.trim().toLocaleLowerCase('pt-BR').slice(0, 100);
+  const conditions: string[] = [];
+  const values: unknown[] = [];
+  if (status !== 'ALL') {
+    conditions.push('o.status=?');
+    values.push(status);
+  }
+  if (query) {
+    const term = likeTerm(query);
+    conditions.push(`(
+      lower(COALESCE(u.display_name,'')) LIKE ? ESCAPE '\\'
+      OR lower(u.email) LIKE ? ESCAPE '\\'
+      OR lower(o.product_name) LIKE ? ESCAPE '\\'
+      OR lower(o.id) LIKE ? ESCAPE '\\'
+    )`);
+    values.push(term, term, term, term);
+  }
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const pageSize = 12;
+  const [metricsResult, countResult, ordersResult] = await db.batch([
+    db.prepare(`SELECT
+      count(*) AS total_orders,
+      COALESCE(sum(CASE WHEN status IN ('PENDING_PAYMENT','PAID') THEN quantity ELSE 0 END),0) AS sold_pieces,
+      COALESCE(sum(CASE WHEN status IN ('PENDING_PAYMENT','PAID') THEN total_cents ELSE 0 END),0) AS revenue_cents,
+      COALESCE(sum(CASE WHEN status IN ('PENDING_PAYMENT','PAID') THEN 1 ELSE 0 END),0) AS confirmed_orders,
+      COALESCE(sum(CASE WHEN status='AWAITING_INTEGRATION' THEN 1 ELSE 0 END),0) AS pending_orders,
+      COALESCE(sum(CASE WHEN status='PENDING_PAYMENT' THEN 1 ELSE 0 END),0) AS accepted_orders,
+      COALESCE(sum(CASE WHEN status='PAID' THEN 1 ELSE 0 END),0) AS production_orders
+      FROM store_orders`),
+    db
+      .prepare(`SELECT count(*) AS n FROM store_orders o
+        JOIN store_users u ON u.id=o.user_id ${where}`)
+      .bind(...values),
+    db
+      .prepare(`SELECT o.*,u.display_name AS customer_name,u.email AS customer_email
+        FROM store_orders o JOIN store_users u ON u.id=o.user_id ${where}
+        ORDER BY o.created_at DESC,o.id DESC LIMIT ? OFFSET ?`)
+      .bind(...values, pageSize, page * pageSize),
+  ]);
+  const metrics = metricsResult.results[0] as {
+    total_orders: number;
+    sold_pieces: number;
+    revenue_cents: number;
+    confirmed_orders: number;
+    pending_orders: number;
+    accepted_orders: number;
+    production_orders: number;
+  };
+  const total = Number((countResult.results[0] as { n: number }).n);
+  const confirmedOrders = Number(metrics.confirmed_orders);
+  return {
+    metrics: {
+      soldPieces: Number(metrics.sold_pieces),
+      revenue: Number(metrics.revenue_cents) / 100,
+      pendingOrders: Number(metrics.pending_orders),
+      acceptedOrders: Number(metrics.accepted_orders),
+      productionOrders: Number(metrics.production_orders),
+      totalOrders: Number(metrics.total_orders),
+      averageTicket: confirmedOrders
+        ? Number(metrics.revenue_cents) / 100 / confirmedOrders
+        : 0,
+    },
+    orders: (ordersResult.results as AdminOrderRow[]).map(adminView),
+    page,
+    totalPages: Math.ceil(total / pageSize),
+    totalElements: total,
+  };
+}
+
+export async function advanceAdminOrder(
+  db: D1Database,
+  id: string,
+  requestedStatus: unknown,
+) {
+  const transitions: Record<
+    string,
+    { from: StoreOrderStatus; to: StoreOrderStatus }
+  > = {
+    ACCEPTED: { from: 'AWAITING_INTEGRATION', to: 'PENDING_PAYMENT' },
+    IN_PRODUCTION: { from: 'PENDING_PAYMENT', to: 'PAID' },
+  };
+  const transition =
+    typeof requestedStatus === 'string'
+      ? transitions[requestedStatus]
+      : undefined;
+  if (!transition) return fail(400, 'Status de pedido invÃ¡lido.');
+  const updated = await db
+    .prepare(
+      'UPDATE store_orders SET status=? WHERE id=? AND status=? RETURNING id',
+    )
+    .bind(transition.to, id, transition.from)
+    .first<{ id: string }>();
+  if (updated) return { id, status: transition.to };
+  const current = await db
+    .prepare('SELECT status FROM store_orders WHERE id=?')
+    .bind(id)
+    .first<{ status: StoreOrderStatus }>();
+  if (!current) return fail(404, 'Pedido nÃ£o encontrado.');
+  return fail(409, 'Este pedido jÃ¡ foi atualizado. Recarregue a dashboard.');
 }

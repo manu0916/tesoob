@@ -17,8 +17,15 @@ import {
   archiveProduct,
   pageNumber,
 } from './store-products';
-import { createOrder, getOrder, listOrders } from './store-orders';
+import {
+  adminDashboard,
+  advanceAdminOrder,
+  createOrder,
+  getOrder,
+  listOrders,
+} from './store-orders';
 import { uploadProductImage, serveProductImage } from './store-images';
+import { cancelDrop, createDrop, listDrops, nextDrop } from './store-drops';
 import {
   cookie,
   csrf,
@@ -87,11 +94,27 @@ export async function handleStore(
       return googleCallback(db, request, settings);
     if (path === '/products' && method === 'GET')
       return json(await listProducts(db, pageNumber(url)));
+    if (path === '/drops/next' && method === 'GET')
+      return json(await nextDrop(db));
     const productId = path.match(/^\/products\/([^/]+)$/)?.[1];
     if (productId && method === 'GET')
       return json(await getProduct(db, productId));
     if (path.startsWith('/admin/')) {
       await requireStoreAdmin(request);
+      if (path === '/admin/dashboard' && method === 'GET')
+        return json(
+          await adminDashboard(
+            db,
+            pageNumber(url),
+            url.searchParams.get('status') || 'ALL',
+            url.searchParams.get('query') || '',
+          ),
+        );
+      const orderId = path.match(/^\/admin\/orders\/([^/]+)$/)?.[1];
+      if (orderId && uuid(orderId) && method === 'PUT') {
+        const input = await readJson(request);
+        return json(await advanceAdminOrder(db, orderId, input.status));
+      }
       if (path === '/admin/images' && method === 'POST') {
         await throttle(db, request, 'admin-image-upload', 20);
         return json(await uploadProductImage(request, settings), 201);
@@ -99,11 +122,40 @@ export async function handleStore(
       if (path === '/admin/products' && method === 'GET')
         return json(await listProducts(db, pageNumber(url), true));
       if (path === '/admin/products' && method === 'POST')
-        return json(await saveProduct(db, null, await readJson(request), settings.STORE_IMAGES), 201);
+        return json(
+          await saveProduct(
+            db,
+            null,
+            await readJson(request),
+            settings.STORE_IMAGES,
+          ),
+          201,
+        );
+      if (path === '/admin/drops' && method === 'GET')
+        return json(await listDrops(db));
+      if (path === '/admin/drops' && method === 'POST')
+        return json(
+          await createDrop(db, await readJson(request), settings.STORE_IMAGES),
+          201,
+        );
+      const dropId = path.match(/^\/admin\/drops\/([^/]+)$/)?.[1];
+      if (dropId && method === 'DELETE') {
+        if (!url.searchParams.has('version'))
+          return fail(400, 'Informe a versão do drop.');
+        await cancelDrop(db, dropId, Number(url.searchParams.get('version')));
+        return json(null, 204);
+      }
       const id = path.match(/^\/admin\/products\/([^/]+)$/)?.[1];
       if (id && uuid(id)) {
         if (method === 'PUT')
-          return json(await saveProduct(db, id, await readJson(request), settings.STORE_IMAGES));
+          return json(
+            await saveProduct(
+              db,
+              id,
+              await readJson(request),
+              settings.STORE_IMAGES,
+            ),
+          );
         if (method === 'DELETE') {
           if (!url.searchParams.has('version'))
             return fail(400, 'Informe a versão do produto.');

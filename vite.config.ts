@@ -29,8 +29,14 @@ export default defineConfig(async ({ command }) => {
       allowedHosts: ['terminal.local'],
       watch: {
         // Generated Pages files are rebuilt atomically and must not be watched on Windows/OneDrive.
-        ignored: ['**/.pages-dist/**', '**/backend/target/**', '**/test-results/**'],
-        ...(usePollingForLocalFs ? { useFsEvents: false, usePolling: true } : {}),
+        ignored: [
+          '**/.pages-dist/**',
+          '**/backend/target/**',
+          '**/test-results/**',
+        ],
+        ...(usePollingForLocalFs
+          ? { useFsEvents: false, usePolling: true }
+          : {}),
       },
     },
     plugins: [
@@ -40,11 +46,28 @@ export default defineConfig(async ({ command }) => {
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
         // Only isolated local QA may override persistence/secrets; never embed these in a build.
         ...(command === 'serve' && process.env.STORE_LOCAL_TEST === '1'
-          ? { persistState: { path: '.wrangler/store-tests' } } : {}),
+          ? { persistState: { path: '.wrangler/store-tests' } }
+          : {}),
         config: {
           ...localBindingConfig,
           ...(command === 'serve' && process.env.STORE_LOCAL_TEST === '1'
-            ? { vars: { STORE_AES_KEY: process.env.STORE_LOCAL_AES_KEY || '' } } : {}),
+            ? {
+                d1_databases: [
+                  {
+                    binding: 'DB',
+                    database_name: 'tesoob-test',
+                    database_id: 'fe8e6d77-722b-45f7-b774-10f07c66e128',
+                  },
+                ],
+                r2_buckets: [
+                  {
+                    binding: 'STORE_IMAGES',
+                    bucket_name: 'tesoob-test-media',
+                  },
+                ],
+                vars: { STORE_AES_KEY: process.env.STORE_LOCAL_AES_KEY || '' },
+              }
+            : {}),
         },
       }),
     ],

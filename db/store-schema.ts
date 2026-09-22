@@ -40,6 +40,22 @@ export const storeSessions = sqliteTable(
   },
   (t) => [index('store_session_expiry').on(t.expiresAt)],
 );
+export const storeDrops = sqliteTable(
+  'store_drops',
+  {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    launchesAt: integer('launches_at').notNull(),
+    cancelledAt: integer('cancelled_at'),
+    version: integer('version').notNull().default(0),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (t) => [
+    index('store_drops_schedule').on(t.cancelledAt, t.launchesAt),
+    check('store_drop_name', sql`length(trim(${t.name})) BETWEEN 1 AND 140`),
+  ],
+);
 export const storeProducts = sqliteTable(
   'store_products',
   {
@@ -49,6 +65,8 @@ export const storeProducts = sqliteTable(
     imageUrl: text('image_url').notNull(),
     description: text('description').notNull(),
     observation: text('observation'),
+    sizesJson: text('sizes_json').notNull().default('[]'),
+    dropId: text('drop_id').references(() => storeDrops.id),
     active: integer('active').notNull().default(1),
     version: integer('version').notNull().default(0),
     createdAt: integer('created_at').notNull(),
@@ -66,6 +84,7 @@ export const storeProducts = sqliteTable(
       'store_product_observation',
       sql`${t.observation} IS NULL OR length(trim(${t.observation}))>0`,
     ),
+    check('store_product_sizes', sql`json_valid(${t.sizesJson})`),
     check('store_product_active', sql`${t.active} IN (0,1)`),
   ],
 );
@@ -80,6 +99,7 @@ export const storeOrders = sqliteTable(
       .notNull()
       .references(() => storeProducts.id),
     productName: text('product_name').notNull(),
+    productSize: text('product_size'),
     quantity: integer('quantity').notNull(),
     unitPriceCents: integer('unit_price_cents').notNull(),
     totalCents: integer('total_cents').notNull(),

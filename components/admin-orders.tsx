@@ -11,6 +11,7 @@ import {
   EyeOff,
   Inbox,
   Layers2,
+  LayoutDashboard,
   LockKeyhole,
   LoaderCircle,
   LogOut,
@@ -21,6 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AdminStoreAccess } from '@/components/admin-navigation';
+import { AdminDashboard } from '@/components/admin-dashboard';
 import {
   ChatComposer,
   ChatLoading,
@@ -150,9 +152,10 @@ export function AdminOrders() {
 }
 
 function AdminWorkspace() {
-  const [open, setOpen] = useState<'store' | 'orders' | null>(null);
+  const [open, setOpen] = useState<'dashboard' | 'store' | 'orders' | null>('dashboard');
   const [ordersVisited, setOrdersVisited] = useState(false);
   const sections = [
+    { key: 'dashboard', title: 'Dashboard', description: 'Vendas, valores e fluxo de produção', icon: LayoutDashboard },
     { key: 'store', title: 'Vitrine', description: 'Gerenciar e adicionar peças', icon: Layers2 },
     { key: 'orders', title: 'Encomendas', description: 'Conversas e atendimento', icon: MessageSquare },
   ] as const;
@@ -188,7 +191,9 @@ function AdminWorkspace() {
             className="admin-divider-panel"
             hidden={open !== key}
           >
-            {key === 'store' ? (
+            {key === 'dashboard' ? (
+              <AdminDashboard />
+            ) : key === 'store' ? (
               <>
                 <AdminStoreAccess />
                 <Link href="/loja" className="admin-divider-preview">

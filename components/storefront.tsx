@@ -14,12 +14,14 @@ import {
   UserRound,
 } from 'lucide-react';
 import { SiteHeader, SiteFooter } from '@/components/tesoob';
+import { DropCountdown } from '@/components/drop-countdown';
 import {
   storeApi,
   storeMessage,
   money,
   type Product,
   type ProductPage,
+  type StoreDrop,
 } from '@/lib/store-api';
 
 export function StoreFrame({ children }: { children: ReactNode }) {
@@ -84,6 +86,7 @@ export function Storefront() {
   const [cart, setCart] = useState<Product[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [catalog, setCatalog] = useState<ProductPage | null>(null);
+  const [nextDrop, setNextDrop] = useState<StoreDrop | null>(null);
   const [page, setPage] = useState(0);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState('');
@@ -103,17 +106,24 @@ export function Storefront() {
     localStorage.setItem('tesoob:cart', JSON.stringify(next));
   }
   function addToCart(product: Product) {
-    if (!cart.some((item) => item.id === product.id)) updateCart([...cart, product]);
+    if (!cart.some((item) => item.id === product.id))
+      updateCart([...cart, product]);
     setCartOpen(true);
   }
   useEffect(() => {
     const controller = new AbortController();
-    storeApi<ProductPage>(`/products?page=${page}`, {
-      signal: controller.signal,
-    })
-      .then((data) => {
+    Promise.all([
+      storeApi<ProductPage>(`/products?page=${page}`, {
+        signal: controller.signal,
+      }),
+      storeApi<{ drop: StoreDrop | null }>('/drops/next', {
+        signal: controller.signal,
+      }),
+    ])
+      .then(([data, upcoming]) => {
         setError('');
         setCatalog(data);
+        setNextDrop(upcoming.drop);
       })
       .catch((e) => {
         if (!controller.signal.aborted) setError(storeMessage(e));
@@ -167,7 +177,9 @@ export function Storefront() {
                   <button
                     type="button"
                     aria-label={`Remover ${product.name} do carrinho`}
-                    onClick={() => updateCart(cart.filter((item) => item.id !== product.id))}
+                    onClick={() =>
+                      updateCart(cart.filter((item) => item.id !== product.id))
+                    }
                   >
                     <Trash2 size={17} />
                   </button>
@@ -198,6 +210,29 @@ export function Storefront() {
           </a>
         </div>
       </header>
+      {nextDrop && (
+        <section
+          className="store-drop-announcement"
+          aria-labelledby="next-drop-title"
+        >
+          <div>
+            <p className="store-kicker">PRÓXIMO LANÇAMENTO</p>
+            <h2 id="next-drop-title">{nextDrop.name}</h2>
+            <p>
+              {nextDrop.productCount} peça
+              {nextDrop.productCount === 1 ? '' : 's'} entram no ar juntas.
+            </p>
+          </div>
+          <DropCountdown
+            target={nextDrop.launchesAt}
+            onComplete={() => {
+              setNextDrop(null);
+              setPage(0);
+              setRetry((value) => value + 1);
+            }}
+          />
+        </section>
+      )}
       <section
         id="vitrine"
         className="store-catalog"
@@ -254,6 +289,16 @@ export function Storefront() {
                     <p>{money(product.price)}</p>
                   </div>
                   <p className="store-description">{product.description}</p>
+                  {!!product.sizes.length && (
+                    <div
+                      className="store-product-sizes"
+                      aria-label="Tamanhos disponíveis"
+                    >
+                      {product.sizes.map((size) => (
+                        <span key={size}>{size}</span>
+                      ))}
+                    </div>
+                  )}
                   <ProductObservation value={product.observation} />
                   <Link
                     className="store-text-link"
@@ -344,6 +389,16 @@ export function ProductDetail({ id }: { id: string }) {
             <h1>{product.name}</h1>
             <p className="store-price">{money(product.price)}</p>
             <p className="store-description">{product.description}</p>
+            {!!product.sizes.length && (
+              <div
+                className="store-product-sizes"
+                aria-label="Tamanhos disponíveis"
+              >
+                {product.sizes.map((size) => (
+                  <span key={size}>{size}</span>
+                ))}
+              </div>
+            )}
             <ProductObservation value={product.observation} />
             <Link
               href={`/loja/checkout/${product.id}`}

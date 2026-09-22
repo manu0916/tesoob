@@ -10,7 +10,17 @@ export type Product = {
   imageUrl: string;
   description: string;
   observation: string | null;
+  sizes: string[];
+  dropId: string | null;
   active: boolean;
+  version: number;
+};
+export type StoreDrop = {
+  id: string;
+  name: string;
+  launchesAt: string;
+  status: 'SCHEDULED' | 'LAUNCHED' | 'CANCELLED';
+  productCount: number;
   version: number;
 };
 export type ProductPage = {
@@ -22,6 +32,7 @@ export type ProductPage = {
 export type Order = {
   id: string;
   productName: string;
+  productSize: string | null;
   quantity: number;
   total: number;
   currency: string;
@@ -100,7 +111,8 @@ export function formText(data: FormData, key: string) {
 export function safeReturn(value: string | null) {
   return value &&
     (/^\/loja\/checkout\/[a-f0-9-]{36}$/.test(value) ||
-      value === '/admin/produtos' || value === '/admin/produtos?novo=1')
+      value === '/admin/produtos' ||
+      value === '/admin/produtos?novo=1')
     ? value
     : '/loja';
 }

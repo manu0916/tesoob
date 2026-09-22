@@ -97,9 +97,7 @@ export function StoreAccount() {
     setNotice('');
     try {
       const payload = {
-        ...(register
-          ? { name: formText(data, 'name'), legalAccepted }
-          : {}),
+        ...(register ? { name: formText(data, 'name'), legalAccepted } : {}),
         email,
         password: formText(data, 'password'),
       };
@@ -185,6 +183,7 @@ export function StoreAccount() {
               <article className="store-order-row" key={order.id}>
                 <div>
                   <h3>{order.productName}</h3>
+                  {order.productSize && <p>Tamanho {order.productSize}</p>}
                   <p>
                     {order.quantity} peça(s) ·{' '}
                     {new Date(order.createdAt).toLocaleDateString('pt-BR')}
@@ -195,12 +194,12 @@ export function StoreAccount() {
                   <strong>{money(order.total)}</strong>
                   <span>
                     {order.status === 'AWAITING_INTEGRATION'
-                      ? 'Aguardando integração de pagamento'
+                      ? 'Pedido pendente'
                       : order.status === 'PAID'
-                        ? 'Pago'
+                        ? 'Em produção'
                         : order.status === 'CANCELLED'
                           ? 'Cancelado'
-                          : 'Aguardando pagamento'}
+                          : 'Pedido aceito'}
                   </span>
                 </div>
               </article>
@@ -322,7 +321,8 @@ export function StoreAccount() {
                     <Link href="/termos-de-uso">Termos de Uso</Link> e a{' '}
                     <Link href="/politica-de-privacidade">
                       Política de Privacidade
-                    </Link>.
+                    </Link>
+                    .
                   </span>
                 </label>
               )}
@@ -385,7 +385,9 @@ export function StoreAccount() {
               setError('');
             }}
           >
-            {register ? 'Já tem uma conta? Entre.' : 'Ainda não tem conta? Crie agora.'}
+            {register
+              ? 'Já tem uma conta? Entre.'
+              : 'Ainda não tem conta? Crie agora.'}
           </button>
         </p>
       )}
