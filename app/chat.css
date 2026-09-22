@@ -5,7 +5,7 @@
   background: transparent;
   color: var(--paper);
   border: 0;
-  border-bottom: 1px solid #686a60;
+  border-bottom: 1px solid #656565;
   border-radius: 0;
   padding: 9px 0;
   font-weight: 400;
@@ -19,7 +19,7 @@
   max-height: calc(100dvh - 40px);
   padding: 30px 36px 25px;
   overflow-y: auto;
-  border: 1px solid #515349;
+  border: 1px solid #4e4e4e;
   border-radius: 0;
   background: var(--background);
   color: var(--paper);
@@ -33,7 +33,7 @@
   padding-bottom: 20px;
   font-size: 9px;
   letter-spacing: 2px;
-  border-bottom: 1px dashed #515349;
+  border-bottom: 1px dashed #4e4e4e;
 }
 .chat-close[data-slot='button'],
 .chat-back[data-slot='button'] {
@@ -72,7 +72,7 @@
 }
 .order-channel,
 .order-channel[data-slot='button'] {
-  --channel-accent: #667b60;
+  --channel-accent: #6e6e6e;
   display: grid;
   grid-template-columns: 22px 32px minmax(0, 1fr) 28px;
   position: relative;
@@ -83,13 +83,13 @@
   padding: 25px 22px;
   gap: 17px;
   align-items: center;
-  border: 1px solid #3d4037;
+  border: 1px solid #3c3c3c;
   border-radius: 0;
   text-align: left;
   white-space: normal;
   background:
     linear-gradient(112deg, color-mix(in srgb, var(--channel-accent) 9%, transparent), transparent 38%),
-    linear-gradient(145deg, #181914 0%, #11120f 72%);
+    linear-gradient(145deg, #161616 0%, #101010 72%);
   color: var(--paper);
   box-shadow:
     inset 3px 0 0 var(--channel-accent),
@@ -110,7 +110,7 @@
   height: 46px;
   border: 1px solid color-mix(in srgb, var(--channel-accent) 65%, transparent);
   transform: rotate(45deg);
-  background: #0b0c0a;
+  background: #0a0a0a;
 }
 .order-channel:hover,
 .order-channel[data-slot='button']:hover {
@@ -118,7 +118,7 @@
   border-color: color-mix(in srgb, var(--channel-accent) 75%, var(--paper));
   background:
     linear-gradient(112deg, color-mix(in srgb, var(--channel-accent) 15%, transparent), transparent 44%),
-    linear-gradient(145deg, #1c1d17 0%, #12130f 72%);
+    linear-gradient(145deg, #1a1a1a 0%, #111111 72%);
   box-shadow:
     inset 3px 0 0 var(--channel-accent),
     7px 7px 0 color-mix(in srgb, var(--channel-accent) 35%, transparent),
@@ -178,14 +178,14 @@
   --channel-accent: var(--red);
   background:
     linear-gradient(112deg, color-mix(in srgb, var(--red) 12%, transparent), transparent 42%),
-    linear-gradient(145deg, #1a1713 0%, #11120f 72%);
+    linear-gradient(145deg, #161616 0%, #101010 72%);
   color: var(--paper);
-  border: 1px solid #493831;
+  border: 1px solid #3d3d3d;
 }
 .order-channel-chat[data-slot='button']:hover {
   background:
     linear-gradient(112deg, color-mix(in srgb, var(--red) 18%, transparent), transparent 46%),
-    linear-gradient(145deg, #201713 0%, #12130f 72%);
+    linear-gradient(145deg, #1a1a1a 0%, #111111 72%);
 }
 .order-channel-chat .channel-description,
 .order-channel-chat .channel-number {
@@ -280,7 +280,7 @@
   top: 18px;
   right: 16px;
   height: 118px;
-  color: #667b60;
+  color: #6e6e6e;
   transform: rotate(8deg);
 }
 .chat-doodle-scissors {
@@ -301,7 +301,7 @@
   top: 360px;
   right: -48px;
   height: 145px;
-  color: #667b60;
+  color: #6e6e6e;
   opacity: 0.13;
   transform: rotate(-12deg);
   animation-delay: 0.2s;
@@ -317,7 +317,7 @@
   bottom: 144px;
   left: 11px;
   height: 42px;
-  color: #667b60;
+  color: #6e6e6e;
   animation-delay: 0.3s;
 }
 .chat-doodle-stitch {
@@ -361,8 +361,8 @@
   margin-top: 8px;
   font-size: 14px;
   min-height: 46px;
-  background: #151611f5;
-  border-color: #3a3c33;
+  background: #141414f5;
+  border-color: #383838;
   transition:
     border-color 0.2s,
     box-shadow 0.2s,
@@ -370,9 +370,9 @@
 }
 .chat-start-form input:focus,
 .chat-start-form textarea:focus {
-  background: #191a15;
+  background: #181818;
   border-color: color-mix(in srgb, var(--red) 70%, var(--paper));
-  box-shadow: 4px 4px 0 #df281b24;
+  box-shadow: 4px 4px 0 #d4d4d424;
 }
 .chat-start-form textarea {
   min-height: 116px;
@@ -436,14 +436,14 @@
   content: '';
   width: 5px;
   height: 5px;
-  background: #a6a79f;
+  background: #a3a3a3;
   flex: none;
 }
 .chat-status-new::before {
   background: var(--red);
 }
 .chat-status-active::before {
-  background: #9bab77;
+  background: #919191;
 }
 .chat-status-closed {
   color: var(--muted-foreground);
@@ -455,7 +455,7 @@
   overscroll-behavior: contain;
   padding: 20px 5px;
   scrollbar-width: thin;
-  scrollbar-color: #494d3e transparent;
+  scrollbar-color: #464646 transparent;
 }
 .chat-transcript-note {
   font-size: 8px;
@@ -483,7 +483,7 @@
   margin: 0 auto 14px 0;
   padding: 15px 17px;
   border: 1px solid var(--border);
-  background: #171914;
+  background: #161616;
   color: var(--paper);
 }
 .chat-message-own {
@@ -492,6 +492,10 @@
   background: var(--paper);
   border-color: var(--paper);
   color: var(--background);
+  text-shadow: none;
+}
+.chat-message-own * {
+  text-shadow: none;
 }
 .chat-message-label {
   display: flex;
@@ -529,7 +533,7 @@
   resize: vertical;
   padding: 11px 13px;
   font-size: 13px;
-  background: #151611;
+  background: #141414;
 }
 .chat-send[data-slot='button'] {
   width: 54px;
@@ -540,7 +544,7 @@
   color: var(--paper);
 }
 .chat-send[data-slot='button']:hover {
-  background: #ce2b1f;
+  background: #555555;
 }
 .chat-compose-hint {
   display: flex;
@@ -577,7 +581,7 @@
 }
 .chat-retry {
   border-left: 2px solid var(--red);
-  background: #251912;
+  background: #1c1c1c;
   padding: 12px;
   margin: 10px 0;
   flex: none;
@@ -663,7 +667,7 @@
   place-items: center;
   width: 58px;
   height: 58px;
-  border: 1px solid #626855;
+  border: 1px solid #5e5e5e;
   margin-bottom: 30px;
 }
 .admin-login h2 {
@@ -868,7 +872,7 @@
   padding: 22px;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: #11120f;
+  background: #101010;
 }
 .admin-metric::after {
   position: absolute;
@@ -876,13 +880,13 @@
   bottom: -42px;
   width: 108px;
   height: 108px;
-  border: 1px solid #303228;
+  border: 1px solid #2d2d2d;
   border-radius: 50%;
   content: '';
 }
 .admin-metric-featured {
-  border-color: #8e2a22;
-  background: linear-gradient(145deg, #261411, #12130f 72%);
+  border-color: #585858;
+  background: linear-gradient(145deg, #1c1c1c, #111111 72%);
 }
 .admin-metric > span {
   display: grid;
@@ -890,8 +894,8 @@
   height: 38px;
   margin-bottom: 22px;
   place-items: center;
-  border: 1px solid #4a4d3f;
-  color: #c1c6ad;
+  border: 1px solid #464646;
+  color: #bababa;
 }
 .admin-metric > p {
   margin-bottom: 8px;
@@ -916,13 +920,13 @@
   position: relative;
   z-index: 1;
   margin-top: 12px;
-  color: #85877e;
+  color: #828282;
   font-size: 9px;
   line-height: 1.5;
 }
 .admin-purchase-log {
   border: 1px solid var(--border);
-  background: #0e0f0c;
+  background: #0e0e0e;
 }
 .admin-purchase-log-heading {
   display: flex;
@@ -959,7 +963,7 @@
   gap: 12px;
   padding: 14px;
   border-bottom: 1px solid var(--border);
-  background: #131410;
+  background: #121212;
 }
 .admin-log-search {
   display: flex;
@@ -969,7 +973,7 @@
   padding: 0 14px;
   border: 1px solid var(--border);
   color: var(--muted-foreground);
-  background: #0d0e0b;
+  background: #0c0c0c;
 }
 .admin-log-search input {
   width: 100%;
@@ -983,7 +987,7 @@
   font-size: 11px;
 }
 .admin-log-search:focus-within {
-  border-color: #74776b;
+  border-color: #717171;
 }
 .admin-log-filter {
   display: grid;
@@ -1002,7 +1006,7 @@
   padding: 0 30px 0 9px;
   border: 0;
   outline: 0;
-  background: #0d0e0b;
+  background: #0c0c0c;
   color: var(--paper);
   font: inherit;
   font-size: 11px;
@@ -1014,9 +1018,9 @@
   gap: 9px;
   margin: 14px;
   padding: 11px 13px;
-  border-left: 2px solid #9bab77;
-  background: #171d14;
-  color: #d8ddca;
+  border-left: 2px solid #919191;
+  background: #181818;
+  color: #d4d4d4;
   font-size: 11px;
 }
 .admin-dashboard-error {
@@ -1027,7 +1031,7 @@
   margin: 14px;
   padding: 11px 13px;
   border-left: 2px solid var(--red);
-  background: #251912;
+  background: #1c1c1c;
   font-size: 11px;
 }
 .admin-dashboard-error button {
@@ -1052,7 +1056,7 @@
 .admin-orders-table th {
   padding: 13px 14px;
   border-bottom: 1px solid var(--border);
-  color: #777a70;
+  color: #757575;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.7px;
@@ -1063,15 +1067,15 @@
 .admin-orders-table td {
   max-width: 210px;
   padding: 18px 14px;
-  border-bottom: 1px solid #262820;
-  color: #bdbfb5;
+  border-bottom: 1px solid #242424;
+  color: #bababa;
   vertical-align: middle;
 }
 .admin-orders-table tbody tr:last-child td {
   border-bottom: 0;
 }
 .admin-orders-table tbody tr:hover {
-  background: #141510;
+  background: #121212;
 }
 .admin-orders-table td > strong {
   display: block;
@@ -1085,7 +1089,7 @@
   max-width: 180px;
   margin-top: 5px;
   overflow: hidden;
-  color: #7d7f76;
+  color: #7a7a7a;
   font-size: 9px;
   line-height: 1.4;
   text-overflow: ellipsis;
@@ -1100,8 +1104,8 @@
   gap: 7px;
   min-height: 28px;
   padding: 6px 8px;
-  border: 1px solid #45473d;
-  color: #b8bab0;
+  border: 1px solid #424242;
+  color: #b5b5b5;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.4px;
@@ -1111,29 +1115,29 @@
 .admin-order-status::before {
   width: 5px;
   height: 5px;
-  background: #999b91;
+  background: #969696;
   content: '';
 }
 .admin-order-status-awaiting_integration {
-  border-color: #854038;
-  color: #eea69f;
+  border-color: #5e5e5e;
+  color: #c6c6c6;
 }
 .admin-order-status-awaiting_integration::before {
   background: var(--red);
 }
 .admin-order-status-pending_payment {
-  border-color: #766a3a;
-  color: #d8c67d;
+  border-color: #585858;
+  color: #aaaaaa;
 }
 .admin-order-status-pending_payment::before {
-  background: #d0a936;
+  background: #838383;
 }
 .admin-order-status-paid {
-  border-color: #52613f;
-  color: #becd9b;
+  border-color: #505050;
+  color: #b4b4b4;
 }
 .admin-order-status-paid::before {
-  background: #9bab77;
+  background: #919191;
 }
 .admin-order-status-cancelled {
   opacity: 0.55;
@@ -1149,8 +1153,8 @@
   gap: 7px;
   min-height: 38px;
   padding: 9px 11px;
-  border: 1px solid #7d2922;
-  background: #a7261d;
+  border: 1px solid #505050;
+  background: #626262;
   color: white;
   font: inherit;
   font-size: 9px;
@@ -1159,14 +1163,14 @@
   white-space: nowrap;
 }
 .admin-order-action button:hover:not(:disabled) {
-  background: #c02c21;
+  background: #707070;
 }
 .admin-order-action button:disabled {
   cursor: wait;
   opacity: 0.5;
 }
 .admin-order-no-action {
-  color: #777a70;
+  color: #757575;
   font-size: 9px;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1298,7 +1302,7 @@
   .admin-orders-table td::before {
     display: block;
     margin-bottom: 5px;
-    color: #74766e;
+    color: #727272;
     content: attr(data-label);
     font-size: 7px;
     font-weight: 700;
@@ -1386,7 +1390,7 @@
   font-weight: 600;
 }
 .admin-store-manage { background: var(--primary); color: var(--paper); }
-.admin-store-manage:hover { background: #9d2018; }
+.admin-store-manage:hover { background: #555555; }
 .admin-store-add { border: 1px solid var(--border); color: var(--paper); }
 .admin-store-add:hover { border-color: var(--paper); }
 @media (max-width: 700px) {
@@ -1402,7 +1406,7 @@
   min-height: 0;
   min-width: 0;
   border-right: 1px solid var(--border);
-  background: #11120f;
+  background: #101010;
 }
 .admin-list-heading {
   display: flex;
@@ -1478,10 +1482,10 @@
   color: var(--paper);
 }
 .admin-conversation:hover {
-  background: #1c1f17;
+  background: #1b1b1b;
 }
 .admin-conversation.is-selected {
-  background: #202319;
+  background: #1e1e1e;
   border-left-color: var(--red);
 }
 .admin-conversation-top {
@@ -1552,7 +1556,7 @@
 }
 .admin-empty > svg {
   margin-bottom: 30px;
-  color: #777e65;
+  color: #727272;
 }
 .admin-empty .eyebrow {
   font-size: 8px;
@@ -1588,6 +1592,7 @@
   letter-spacing: 1px;
 }
 .admin-thread-heading h2 {
+  text-shadow: none;
   margin-top: 10px;
   font-size: 23px;
   font-weight: 600;
@@ -1604,7 +1609,7 @@
   flex-wrap: wrap;
   gap: 10px 20px;
   padding: 15px 0 20px;
-  border-bottom: 1px dashed #515349;
+  border-bottom: 1px dashed #4e4e4e;
 }
 .admin-order-details p {
   font-size: 10px;
