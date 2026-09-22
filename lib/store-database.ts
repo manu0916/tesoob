@@ -1,7 +1,7 @@
 import migration from '@/drizzle/0002_storefront.sql?raw';
 import userNameMigration from '@/drizzle/0003_store_user_name.sql?raw';
 import legalConsentMigration from '@/drizzle/0004_store_legal_consent.sql?raw';
-import dropsAndSizesMigration from '@/drizzle/0005_drops_and_sizes.sql?raw';
+import userProfileMigration from '@/drizzle/0005_store_user_profile.sql?raw';
 import { database as chatDatabase } from './chat-server';
 import { digest, fail } from './store-security';
 
@@ -23,7 +23,7 @@ export async function storeDatabase() {
       for (const [id, sql] of [
         ['0003_store_user_name', userNameMigration],
         ['0004_store_legal_consent', legalConsentMigration],
-        ['0005_drops_and_sizes', dropsAndSizesMigration],
+        ['0005_store_user_profile', userProfileMigration],
       ]) {
         const applied = await db
           .prepare('SELECT id FROM store_migrations WHERE id=?')
@@ -70,7 +70,7 @@ export async function throttle(
     fail(429, 'Muitas tentativas. Aguarde um minuto.');
 }
 export const productColumns =
-  'id, name, price_cents, image_url, description, observation, sizes_json, drop_id, active, version';
+  'id, name, price_cents, image_url, description, observation, active, version';
 export type ProductRow = {
   id: string;
   name: string;
@@ -78,8 +78,6 @@ export type ProductRow = {
   image_url: string;
   description: string;
   observation: string | null;
-  sizes_json: string;
-  drop_id: string | null;
   active: number;
   version: number;
 };
@@ -90,8 +88,6 @@ export const productView = (p: ProductRow) => ({
   imageUrl: p.image_url,
   description: p.description,
   observation: p.observation,
-  sizes: JSON.parse(p.sizes_json) as string[],
-  dropId: p.drop_id,
   active: !!p.active,
   version: p.version,
 });

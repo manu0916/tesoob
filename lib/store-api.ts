@@ -2,6 +2,8 @@ export type StoreUser = {
   id: string;
   email: string;
   role: 'CUSTOMER' | 'ADMIN';
+  displayName: string | null;
+  onboardingRequired: boolean;
 };
 export type Product = {
   id: string;

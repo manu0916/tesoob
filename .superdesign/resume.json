@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "feature:google-login": {
+      "targetKind": "existing-ui",
+      "projectId": "5ed1cb12-3686-4d4d-a499-acb6fe05f638",
+      "baselineDraftId": "8f35b775-59a5-4ac5-bb95-e8f3e6d665da",
+      "activeDraftId": "8f35b775-59a5-4ac5-bb95-e8f3e6d665da",
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "components/store-account.tsx",
+        "app/store.css",
+        "app/globals.css"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "8a1d2b622726e93303164632ed6afa4f1fbab4fff3861a7ac415c06317dacb0d",
+        "app/store.css": "fa81ea684e2d37ad41e182441baab485853dd9debef7a32ad6fa90a34a8dcce3",
+        "app/globals.css": "0c66f129116705beb3690ef701bb961da143790f94e6e9b92b8e2e1fed53ca88",
+        "components/store-account.tsx": "22d69540db5e26923636389b6316bb9cbf4900cf68352e6dac9ba059ef7d967f"
+      },
+      "drafts": {
+        "8f35b775-59a5-4ac5-bb95-e8f3e6d665da": {
+          "title": "Acesso Google — símbolo Tesoob",
+          "visualDirection": "Botão Google monocromático com brilho fosco Tesoob",
+          "currentVersion": 2
+        }
+      },
+      "updatedAt": "2026-09-22T21:16:49.550Z"
+    },
+    "feature:google-onboarding": {
+      "targetKind": "new-ui",
+      "projectId": "5ed1cb12-3686-4d4d-a499-acb6fe05f638",
+      "sourceTarget": "feature:google-login",
+      "sourceDraftId": "8f35b775-59a5-4ac5-bb95-e8f3e6d665da",
+      "activeDraftId": "d266575f-3907-4aa6-922d-73a9ca52d85d",
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "components/store-google-onboarding.tsx",
+        "components/google-mark.tsx",
+        "app/store.css",
+        "components/store-account.tsx",
+        "lib/store-api.ts"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "8a1d2b622726e93303164632ed6afa4f1fbab4fff3861a7ac415c06317dacb0d",
+        "components/store-google-onboarding.tsx": "5f063280d43b3f2c5e37cb98dd5d23cca4e0e0cc9c842371dbf64692fe4fcf40",
+        "components/google-mark.tsx": "c35fd5e3507a23599d33700d1b1ce2725e2fe2cc39c42a5db5a4d54841058e51",
+        "app/store.css": "ed258c58a6443eff251d600088a1865b247539575e4926cc5b6ba24e4d4a33d3",
+        "components/store-account.tsx": "883abb1795d480f48ac6f5df46d46ef5a5cf5ca357ee74dbbbb493825702bbea",
+        "lib/store-api.ts": "c33889a9779e7aa4e642c452417da93f727a2eae8329008c7d507799b6b0cedd"
+      },
+      "drafts": {
+        "d266575f-3907-4aa6-922d-73a9ca52d85d": {
+          "title": "Onboarding Google — último passo",
+          "visualDirection": "Tela monocromática Tesoob para confirmar apelido e termos após o Google",
+          "currentVersion": 1
+        }
+      },
+      "updatedAt": "2026-09-22T23:15:04.8577591Z"
+    }
+  }
+}

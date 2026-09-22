@@ -1,3 +1,77 @@
+# Shared Layouts
+
+## RootLayout
+
+- Path: `app/layout.tsx`
+- Description: Root HTML shell, metadata, global styles, skip link.
+
+```tsx
+import type { Metadata } from 'next';
+import { absoluteUrl, siteConfig } from '@/lib/site-config';
+import './globals.css';
+import './chat.css';
+import './store.css';
+const title = 'Tesoob â€” O comum ficou para trÃ¡s.';
+const description =
+  'PeÃ§as exclusivas, recortes e atitude. ConheÃ§a os looks e o universo da Tesoob e converse sobre sua encomenda.';
+const previewImage = absoluteUrl('/media/social-card.jpg');
+export const metadata: Metadata = {
+  title,
+  description,
+  metadataBase: siteConfig.publicOrigin
+    ? new URL(siteConfig.publicOrigin)
+    : undefined,
+  alternates: siteConfig.publicOrigin
+    ? { canonical: siteConfig.publicOrigin }
+    : undefined,
+  openGraph: {
+    title,
+    description,
+    siteName: 'Tesoob',
+    locale: 'pt_BR',
+    type: 'website',
+    url: siteConfig.publicOrigin || undefined,
+    images: previewImage
+      ? [
+          {
+            url: previewImage,
+            width: 1200,
+            height: 630,
+            alt: 'Tesoob â€” O comum ficou para trÃ¡s. Editorial de looks vermelho e verde.',
+          },
+        ]
+      : [],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+    images: previewImage ? [previewImage] : [],
+  },
+  icons: { icon: '/media/favicon.png' },
+};
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="pt-BR">
+      <body>
+        <a href="#conteudo" className="skip-link">
+          Pular para o conteÃºdo
+        </a>
+        <div id="conteudo">{children}</div>
+      </body>
+    </html>
+  );
+}
+```
+
+## SiteHeader and SiteFooter
+
+- Path: `components/tesoob.tsx`
+- Description: Primary public-site navigation, footer, logo, and shared homepage presentation.
+
+```tsx
 /* oxlint-disable next/no-img-element -- Media is preoptimized locally; ArtImage supplies responsive srcsets and dimensions. */
 'use client';
 
@@ -97,12 +171,12 @@ export function ContactLink({
         target="_blank"
         rel="noopener noreferrer"
       >
-        {children || 'Encomendar sua peça'} <ArrowUpRight size={18} />
+        {children || 'Encomendar sua peÃ§a'} <ArrowUpRight size={18} />
       </a>
     );
   return (
     <OrderLauncher className={className} input={input}>
-      {children || 'Encomendar sua peça'}
+      {children || 'Encomendar sua peÃ§a'}
     </OrderLauncher>
   );
 }
@@ -111,7 +185,7 @@ export function SiteHeader({ cloneWhatsAppNumber }: CloneContact = {}) {
   const clone = cloneWhatsAppNumber !== undefined;
   return (
     <header className="site-header">
-      <Link href={clone ? '/clone' : '/'} aria-label="Tesoob, início">
+      <Link href={clone ? '/clone' : '/'} aria-label="Tesoob, inÃ­cio">
         <img
           className="brand-logo"
           src="/media/logo-tesoob.png"
@@ -123,7 +197,7 @@ export function SiteHeader({ cloneWhatsAppNumber }: CloneContact = {}) {
       <nav aria-label="Principal">
         {!clone && <Link href="/loja">Vitrine</Link>}
         {[
-          ['Peças', 'pecas'],
+          ['PeÃ§as', 'pecas'],
           ['Editorial', 'editorial'],
           ['Processo', 'processo'],
         ].map(([label, id]) => (
@@ -155,7 +229,7 @@ export function SiteFooter({ cloneWhatsAppNumber }: CloneContact = {}) {
   return (
     <footer className="site-footer">
       <div className="footer-top">
-        <Link href={clone ? '/clone' : '/'} aria-label="Tesoob, início">
+        <Link href={clone ? '/clone' : '/'} aria-label="Tesoob, inÃ­cio">
           <img
             src="/media/logo-tesoob.png"
             alt="Tesoob"
@@ -163,7 +237,7 @@ export function SiteFooter({ cloneWhatsAppNumber }: CloneContact = {}) {
             height="45"
           />
         </Link>
-        <p>O comum ficou para trás.</p>
+        <p>O comum ficou para trÃ¡s.</p>
         <a
           href={siteConfig.instagram}
           target="_blank"
@@ -173,26 +247,26 @@ export function SiteFooter({ cloneWhatsAppNumber }: CloneContact = {}) {
         </a>
       </div>
       <div className="footer-bottom">
-        <span>TESOOB / PEÇAS EXCLUSIVAS</span>
+        <span>TESOOB / PEÃ‡AS EXCLUSIVAS</span>
         <a
           href={siteConfig.creatorInstagram}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Por Lúcio Henrique <ArrowUpRight size={12} />
+          Por LÃºcio Henrique <ArrowUpRight size={12} />
         </a>
         <span className="footer-credit">
           Site criado por <strong>emanuel silv</strong>
         </span>
         <Link href={clone ? '/admin/clone' : '/admin'}>
-          {clone ? 'Configurar WhatsApp' : 'Área do ateliê'}
+          {clone ? 'Configurar WhatsApp' : 'Ãrea do ateliÃª'}
         </Link>
         {!clone && <Link href="/loja">Vitrine de vendas</Link>}
         <span>{siteConfig.locality} / Envio para todo o Brasil</span>
         <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
-        <Link href="/politica-de-privacidade">Política de Privacidade</Link>
+        <Link href="/politica-de-privacidade">PolÃ­tica de Privacidade</Link>
         <Link href="/termos-de-uso">Termos de Uso</Link>
-        <a href="#conteudo">Voltar ao topo ↑</a>
+        <a href="#conteudo">Voltar ao topo â†‘</a>
       </div>
     </footer>
   );
@@ -261,7 +335,7 @@ function Hero({ cloneWhatsAppNumber }: CloneContact) {
     <section className="hero" id="inicio">
       <div className="hero-copy">
         <p className="eyebrow">
-          <span className="red-dot" /> VISTA SUA PRÓPRIA ATITUDE
+          <span className="red-dot" /> VISTA SUA PRÃ“PRIA ATITUDE
         </p>
         <h1>
           <span className="title-line">
@@ -271,26 +345,26 @@ function Hero({ cloneWhatsAppNumber }: CloneContact) {
             <span>FICOU</span>
           </span>
           <span className="title-line title-red title-brand">
-            <span className="brand-accent">PARA TRÁS.</span>
+            <span className="brand-accent">PARA TRÃS.</span>
           </span>
         </h1>
         <div className="hero-bottom">
           <p>
-            Peças exclusivas.
+            PeÃ§as exclusivas.
             <br />
-            Presença que não pede licença.
+            PresenÃ§a que nÃ£o pede licenÃ§a.
           </p>
         </div>
         <div className="hero-ctas">
           <Link href={clone ? '#pecas' : '/loja'} className="action action-red">
-            {clone ? 'Explorar as peças' : 'Ver peças disponíveis'}{' '}
+            {clone ? 'Explorar as peÃ§as' : 'Ver peÃ§as disponÃ­veis'}{' '}
             <ArrowUpRight size={20} />
           </Link>
           <ContactLink
             className="hero-order-cta"
             cloneWhatsAppNumber={cloneWhatsAppNumber}
           >
-            Encomendar uma peça
+            Encomendar uma peÃ§a
           </ContactLink>
         </div>
         <a className="scroll-note" href="#pecas">
@@ -311,7 +385,7 @@ function Hero({ cloneWhatsAppNumber }: CloneContact) {
         </div>
         <span className="side-caption">THE ORDINARY HAS BEEN LEFT BEHIND.</span>
         <span className="hero-stamp">
-          PEÇAS
+          PEÃ‡AS
           <br />
           EXCLUSIVAS <ArrowUpRight size={24} />
         </span>
@@ -328,7 +402,7 @@ function LookCard({
   const clone = cloneWhatsAppNumber !== undefined;
   const href = clone
     ? cloneWhatsAppUrl(cloneWhatsAppNumber, {
-        reference: `REF. ${look.ref} — ${look.name}`,
+        reference: `REF. ${look.ref} â€” ${look.name}`,
         publicUrl: absoluteUrl('/clone#pecas'),
       })
     : `/pecas/${look.slug}`;
@@ -355,7 +429,7 @@ function LookCard({
       <div className="look-card-copy">
         <div className="look-label">
           <span className={`color-swatch ${look.color}`} />
-          <p>REFERÊNCIA {look.ref}</p>
+          <p>REFERÃŠNCIA {look.ref}</p>
           <span>CONSULTE A ENCOMENDA</span>
         </div>
         <Link href={href} {...external}>
@@ -363,7 +437,7 @@ function LookCard({
         </Link>
         {index === 2 && <p className="look-description">{look.description}</p>}
         <Link className="text-link" href={href} {...external}>
-          Conhecer a referência <ArrowUpRight size={16} />
+          Conhecer a referÃªncia <ArrowUpRight size={16} />
         </Link>
       </div>
     </article>
@@ -430,7 +504,7 @@ export function PhotoGallery({
           >
             {expanded
               ? 'Recolher arquivo'
-              : `Ver arquivo completo — ${images.length} fotos`}
+              : `Ver arquivo completo â€” ${images.length} fotos`}
             {expanded ? <Minus size={17} /> : <Plus size={17} />}
           </Button>
         </div>
@@ -463,7 +537,7 @@ export function PhotoGallery({
           </DialogDescription>
           <div className="lightbox-top">
             <span>
-              TESOOB / {String((active ?? 0) + 1).padStart(2, '0')} —{' '}
+              TESOOB / {String((active ?? 0) + 1).padStart(2, '0')} â€”{' '}
               {images.length}
             </span>
             <DialogClose
@@ -512,7 +586,7 @@ export function PhotoGallery({
               className="icon-button"
               variant="ghost"
               onClick={() => move(1)}
-              aria-label="Próxima fotografia"
+              aria-label="PrÃ³xima fotografia"
             >
               <ArrowRight />
             </Button>
@@ -605,7 +679,7 @@ export function VideoPlayer({
       )}
       {error && (
         <p className="video-error">
-          Não foi possível carregar o vídeo.{' '}
+          NÃ£o foi possÃ­vel carregar o vÃ­deo.{' '}
           <a href={`/media/${item.src}`}>Abrir o arquivo</a>
         </p>
       )}
@@ -618,17 +692,17 @@ function CloseDetails({ cloneWhatsAppNumber }: CloneContact) {
   const entries = [
     {
       id: 'amarracoes',
-      label: 'Amarrações',
+      label: 'AmarraÃ§Ãµes',
       title: 'O detalhe que conecta.',
-      copy: 'Linhas que atravessam o vermelho. Amarrações e ilhoses fazem parte do desenho do look.',
+      copy: 'Linhas que atravessam o vermelho. AmarraÃ§Ãµes e ilhoses fazem parte do desenho do look.',
       photo: 'editorial-06',
       look: looks[0],
     },
     {
       id: 'ferragens',
       label: 'Ferragens',
-      title: 'Presença em cada encontro.',
-      copy: 'Cintos, ilhoses e fivelas no verde militar. A força está nos encontros entre os detalhes.',
+      title: 'PresenÃ§a em cada encontro.',
+      copy: 'Cintos, ilhoses e fivelas no verde militar. A forÃ§a estÃ¡ nos encontros entre os detalhes.',
       photo: 'editorial-09',
       look: looks[1],
     },
@@ -636,7 +710,7 @@ function CloseDetails({ cloneWhatsAppNumber }: CloneContact) {
       id: 'camadas',
       label: 'Camadas',
       title: 'Mais de uma forma de olhar.',
-      copy: 'Jeans claro, roxo e aplicações. Cada camada deixa outro detalhe aparecer.',
+      copy: 'Jeans claro, roxo e aplicaÃ§Ãµes. Cada camada deixa outro detalhe aparecer.',
       photo: 'processo-04',
       look: looks[2],
     },
@@ -647,13 +721,13 @@ function CloseDetails({ cloneWhatsAppNumber }: CloneContact) {
       <Tabs defaultValue="amarracoes" className="close-tabs">
         <div className="close-tabs-heading">
           <h2>
-            NADA AQUI É<br />
+            NADA AQUI Ã‰<br />
             <span className="brand-accent">POR ACASO.</span>
           </h2>
           <TabsList
             className="detail-tabs"
             variant="line"
-            aria-label="Detalhes das peças"
+            aria-label="Detalhes das peÃ§as"
           >
             {entries.map((item, index) => (
               <TabsTrigger key={item.id} value={item.id}>
@@ -682,7 +756,7 @@ function CloseDetails({ cloneWhatsAppNumber }: CloneContact) {
                       ? 520
                       : 490
                 }
-                alt={`Detalhe de ${item.label.toLowerCase()} da referência ${item.look.ref}`}
+                alt={`Detalhe de ${item.label.toLowerCase()} da referÃªncia ${item.look.ref}`}
                 loading="lazy"
               />
               <span className="detail-cross" aria-hidden="true">
@@ -703,7 +777,7 @@ function CloseDetails({ cloneWhatsAppNumber }: CloneContact) {
                 href={
                   clone
                     ? cloneWhatsAppUrl(cloneWhatsAppNumber, {
-                        reference: `REF. ${item.look.ref} — ${item.look.name}`,
+                        reference: `REF. ${item.look.ref} â€” ${item.look.name}`,
                         publicUrl: absoluteUrl('/clone#pecas'),
                       })
                     : `/pecas/${item.look.slug}`
@@ -712,7 +786,7 @@ function CloseDetails({ cloneWhatsAppNumber }: CloneContact) {
                   ? { target: '_blank', rel: 'noopener noreferrer' }
                   : {})}
               >
-                Ver a referência completa <ArrowUpRight size={17} />
+                Ver a referÃªncia completa <ArrowUpRight size={17} />
               </Link>
             </div>
           </TabsContent>
@@ -728,24 +802,24 @@ function ProcessSection() {
       <div className="section">
         <div className="process-heading" data-reveal>
           <div>
-            <p className="eyebrow">04 / POR TRÁS DA PEÇA</p>
+            <p className="eyebrow">04 / POR TRÃS DA PEÃ‡A</p>
             <h2>
               O DETALHE FAZ
               <br />
-              PARTE DA PEÇA.
+              PARTE DA PEÃ‡A.
             </h2>
           </div>
           <p>
-            Do recorte à aplicação.
+            Do recorte Ã  aplicaÃ§Ã£o.
             <br />
-            Um olhar para o processo, para as mãos
-            <br />e para o que se constrói de perto.
+            Um olhar para o processo, para as mÃ£os
+            <br />e para o que se constrÃ³i de perto.
           </p>
         </div>
         <div className="process-grid">
           <figure className="process-main" data-reveal>
             <ArtImage item={photo('processo-01')} />
-            <figcaption>01 / ENTRE IDEIAS, RECORTES E APLICAÇÕES.</figcaption>
+            <figcaption>01 / ENTRE IDEIAS, RECORTES E APLICAÃ‡Ã•ES.</figcaption>
           </figure>
           <div className="process-film" data-reveal>
             <VideoPlayer id="processo-filme" continuous />
@@ -755,7 +829,7 @@ function ProcessSection() {
           </div>
           <figure className="process-bw" data-reveal>
             <ArtImage item={photo('processo-03')} />
-            <figcaption>02 / UM OLHAR SOBRE A CONSTRUÇÃO.</figcaption>
+            <figcaption>02 / UM OLHAR SOBRE A CONSTRUÃ‡ÃƒO.</figcaption>
           </figure>
           <div className="process-note" data-reveal>
             <span className="editorial-plus" aria-hidden="true">
@@ -774,7 +848,7 @@ function ProcessSection() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Por Lúcio Henrique <ArrowUpRight size={15} />
+              Por LÃºcio Henrique <ArrowUpRight size={15} />
             </a>
           </div>
         </div>
@@ -792,14 +866,14 @@ function OrderSection({ cloneWhatsAppNumber }: CloneContact) {
           <span className="red-dot" /> 05 / DO SEU JEITO
         </p>
         <h2>
-          SUA PRÓXIMA PEÇA
+          SUA PRÃ“XIMA PEÃ‡A
           <br />
-          COMEÇA NUMA
+          COMEÃ‡A NUMA
           <br />
           <span className="brand-accent">CONVERSA.</span>
         </h2>
         <p className="order-description">
-          Envie a referência que chamou sua atenção.
+          Envie a referÃªncia que chamou sua atenÃ§Ã£o.
           <br />
           Converse com a Tesoob sobre valores, disponibilidade
           <br />e possibilidades para sua encomenda.
@@ -817,21 +891,21 @@ function OrderSection({ cloneWhatsAppNumber }: CloneContact) {
             item={photo('placa')}
             sizes="(max-width:700px) 70vw, 25vw"
           />
-          <figcaption>O COMUM FICOU PARA TRÁS.</figcaption>
+          <figcaption>O COMUM FICOU PARA TRÃS.</figcaption>
         </figure>
         <ol className="order-steps">
           <li>
             <span>01</span>
             <div>
-              Escolha uma referência
-              <small>Encontre o look ou detalhe que é a sua cara.</small>
+              Escolha uma referÃªncia
+              <small>Encontre o look ou detalhe que Ã© a sua cara.</small>
             </div>
           </li>
           <li>
             <span>02</span>
             <div>
               Comece a conversa
-              <small>Envie a referência e conte sua ideia.</small>
+              <small>Envie a referÃªncia e conte sua ideia.</small>
             </div>
           </li>
           <li>
@@ -870,7 +944,7 @@ function MobileContact({ cloneWhatsAppNumber }: CloneContact) {
   }, []);
   return visible ? (
     <div className="mobile-contact">
-      <span>Sua próxima peça?</span>
+      <span>Sua prÃ³xima peÃ§a?</span>
       <ContactLink
         className="action action-red"
         cloneWhatsAppNumber={cloneWhatsAppNumber}
@@ -888,15 +962,15 @@ export function HomePage({ cloneWhatsAppNumber }: CloneContact = {}) {
       <main>
         <Hero cloneWhatsAppNumber={cloneWhatsAppNumber} />
         <div className="statement-strip" aria-hidden="true">
-          <span>ROUPA É EXPRESSÃO.</span>
+          <span>ROUPA Ã‰ EXPRESSÃƒO.</span>
           <span>TESOOB</span>
-          <span>O COMUM FICOU PARA TRÁS.</span>
+          <span>O COMUM FICOU PARA TRÃS.</span>
           <ArrowUpRight />
         </div>
         <section id="pecas" className="section looks-section">
           <div className="section-heading" data-reveal>
             <div>
-              <p className="eyebrow">01 / AS PEÇAS</p>
+              <p className="eyebrow">01 / AS PEÃ‡AS</p>
               <h2>
                 ATITUDE EM
                 <br />
@@ -904,10 +978,10 @@ export function HomePage({ cloneWhatsAppNumber }: CloneContact = {}) {
               </h2>
             </div>
             <p>
-              Amarrações. Ferragens. Recortes.
+              AmarraÃ§Ãµes. Ferragens. Recortes.
               <br />
-              Explore as referências e encontre
-              <br />o que conversa com você.
+              Explore as referÃªncias e encontre
+              <br />o que conversa com vocÃª.
             </p>
           </div>
           <div className="looks-grid">
@@ -926,7 +1000,7 @@ export function HomePage({ cloneWhatsAppNumber }: CloneContact = {}) {
             <div>
               <p className="eyebrow">02 / NOSSO UNIVERSO</p>
               <h2>
-                FORA DO ÓBVIO.
+                FORA DO Ã“BVIO.
                 <br />
                 <span className="brand-accent">DENTRO DA CENA.</span>
               </h2>
@@ -946,7 +1020,7 @@ export function HomePage({ cloneWhatsAppNumber }: CloneContact = {}) {
                 CONTINUA.
               </h3>
               <p>
-                As peças, as pessoas e o cenário.
+                As peÃ§as, as pessoas e o cenÃ¡rio.
                 <br />
                 Veja o editorial em movimento.
               </p>
@@ -976,7 +1050,7 @@ export function LookPage({ look }: { look: Look }) {
   const imageButton = useRef<HTMLButtonElement>(null);
   const images = look.images.map(photo);
   const input = {
-    reference: `REF. ${look.ref} — ${look.name}`,
+    reference: `REF. ${look.ref} â€” ${look.name}`,
     piece,
     size,
     notes,
@@ -1001,7 +1075,7 @@ export function LookPage({ look }: { look: Look }) {
       <SiteHeader />
       <main className="look-page section">
         <Link href="/#pecas" className="back-link">
-          <ArrowLeft size={15} /> Voltar às peças
+          <ArrowLeft size={15} /> Voltar Ã s peÃ§as
         </Link>
         <div className="look-detail-layout">
           <div className="look-detail-visual">
@@ -1010,7 +1084,7 @@ export function LookPage({ look }: { look: Look }) {
               className="detail-main-image"
               type="button"
               onClick={() => setFullImage(true)}
-              aria-label="Ampliar fotografia da referência"
+              aria-label="Ampliar fotografia da referÃªncia"
             >
               <ArtImage item={images[selected]} priority />
               <span className="image-expand">
@@ -1019,7 +1093,7 @@ export function LookPage({ look }: { look: Look }) {
             </button>
             <div
               className="detail-thumbnails"
-              aria-label="Fotografias da referência"
+              aria-label="Fotografias da referÃªncia"
             >
               {images.map((item, index) => (
                 <button
@@ -1039,7 +1113,7 @@ export function LookPage({ look }: { look: Look }) {
           </div>
           <div className="look-detail-copy">
             <p className="eyebrow">
-              <span className={`color-swatch ${look.color}`} /> REFERÊNCIA{' '}
+              <span className={`color-swatch ${look.color}`} /> REFERÃŠNCIA{' '}
               {look.ref}
             </p>
             <h1>{look.name}</h1>
@@ -1050,11 +1124,11 @@ export function LookPage({ look }: { look: Look }) {
               ))}
             </ul>
             <div className="order-form">
-              <h2>Vamos conversar sobre essa peça?</h2>
+              <h2>Vamos conversar sobre essa peÃ§a?</h2>
               <p>
                 Consulte valores, disponibilidade e possibilidades pelo
-                Instagram ou pelo chat do site. Você pode se interessar pelo
-                look ou por uma das peças.
+                Instagram ou pelo chat do site. VocÃª pode se interessar pelo
+                look ou por uma das peÃ§as.
               </p>
               <details className="optional-fields">
                 <summary>
@@ -1062,7 +1136,7 @@ export function LookPage({ look }: { look: Look }) {
                 </summary>
                 <div>
                   <label htmlFor="piece">
-                    Qual peça chamou sua atenção? <span>opcional</span>
+                    Qual peÃ§a chamou sua atenÃ§Ã£o? <span>opcional</span>
                   </label>
                   <Input
                     id="piece"
@@ -1079,7 +1153,7 @@ export function LookPage({ look }: { look: Look }) {
                     value={size}
                     onChange={(event) => setSize(event.target.value)}
                     maxLength={160}
-                    placeholder="O que você deseja informar"
+                    placeholder="O que vocÃª deseja informar"
                   />
                   <label htmlFor="notes">
                     Sua ideia <span>opcional</span>
@@ -1089,12 +1163,12 @@ export function LookPage({ look }: { look: Look }) {
                     value={notes}
                     onChange={(event) => setNotes(event.target.value)}
                     maxLength={800}
-                    placeholder="Conte o que você está imaginando"
+                    placeholder="Conte o que vocÃª estÃ¡ imaginando"
                   />
                 </div>
               </details>
               <ContactLink input={input}>
-                Encomendar esta referência
+                Encomendar esta referÃªncia
               </ContactLink>
               {!hasWhatsApp && (
                 <>
@@ -1109,8 +1183,8 @@ export function LookPage({ look }: { look: Look }) {
                       <Copy size={16} />
                     )}{' '}
                     {copied === 'reference'
-                      ? 'Referência copiada'
-                      : 'Copiar referência para a conversa'}
+                      ? 'ReferÃªncia copiada'
+                      : 'Copiar referÃªncia para a conversa'}
                   </Button>
                   {copyError && (
                     <label className="copy-fallback" htmlFor="copy-order-text">
@@ -1126,7 +1200,7 @@ export function LookPage({ look }: { look: Look }) {
                 </>
               )}
               <p className="form-note">
-                O contato inicia uma conversa. Valores e detalhes são combinados
+                O contato inicia uma conversa. Valores e detalhes sÃ£o combinados
                 diretamente com a Tesoob.
               </p>
             </div>
@@ -1138,18 +1212,18 @@ export function LookPage({ look }: { look: Look }) {
               {copied === 'link' ? <Check size={15} /> : <Copy size={15} />}{' '}
               {copied === 'link'
                 ? 'Link copiado'
-                : 'Copiar link desta referência'}
+                : 'Copiar link desta referÃªncia'}
             </Button>
             <output className="sr-only" aria-live="polite">
-              {copied ? 'Copiado para a área de transferência.' : ''}
+              {copied ? 'Copiado para a Ã¡rea de transferÃªncia.' : ''}
             </output>
           </div>
         </div>
         <section className="look-motion">
           <div>
-            <p className="eyebrow">OUTROS ÂNGULOS</p>
+            <p className="eyebrow">OUTROS Ã‚NGULOS</p>
             <h2>
-              A PEÇA
+              A PEÃ‡A
               <br />
               <span className="brand-accent">EM MOVIMENTO.</span>
             </h2>
@@ -1165,7 +1239,7 @@ export function LookPage({ look }: { look: Look }) {
             <h2>
               OUTRAS
               <br />
-              REFERÊNCIAS.
+              REFERÃŠNCIAS.
             </h2>
             <Link href="/#pecas" className="text-link">
               Ver todas <ArrowUpRight size={17} />
@@ -1209,7 +1283,7 @@ export function LookPage({ look }: { look: Look }) {
           </DialogDescription>
           <div className="lightbox-top">
             <span>
-              REF. {look.ref} / {selected + 1} — {images.length}
+              REF. {look.ref} / {selected + 1} â€” {images.length}
             </span>
             <DialogClose
               render={
@@ -1246,7 +1320,7 @@ export function LookPage({ look }: { look: Look }) {
               onClick={() =>
                 setSelected((value) => (value + 1) % images.length)
               }
-              aria-label="Próxima fotografia"
+              aria-label="PrÃ³xima fotografia"
             >
               <ArrowRight />
             </Button>
@@ -1256,3 +1330,468 @@ export function LookPage({ look }: { look: Look }) {
     </>
   );
 }
+```
+
+## AdminNavigation
+
+- Path: `components/admin-navigation.tsx`
+- Description: Shared administration navigation.
+
+```tsx
+import { ArrowUpRight, Layers2, MessageSquare, Plus } from 'lucide-react';
+import { SiteLink as Link } from '@/components/site-link';
+
+export function AdminNavigation({ current }: { current: 'orders' | 'products' }) {
+  return (
+    <nav className="admin-workspace-nav" aria-label="Ãreas do administrador">
+      <div>
+        <Link href="/admin" aria-current={current === 'orders' ? 'page' : undefined}>
+          <MessageSquare size={16} aria-hidden="true" /> Encomendas
+        </Link>
+        <Link href="/admin/produtos" aria-current={current === 'products' ? 'page' : undefined}>
+          <Layers2 size={16} aria-hidden="true" /> Vitrine
+        </Link>
+      </div>
+      <Link href="/loja" className="admin-preview-link">
+        Ver vitrine <ArrowUpRight size={16} aria-hidden="true" />
+      </Link>
+    </nav>
+  );
+}
+
+export function AdminStoreAccess() {
+  return (
+    <section className="admin-store-access" aria-labelledby="admin-store-title">
+      <div className="admin-store-copy">
+        <p className="eyebrow">CATÃLOGO / PEÃ‡AS Ã€ VENDA</p>
+        <h2 id="admin-store-title">SUA VITRINE.</h2>
+        <p>Cuide das fotos, dos preÃ§os e das peÃ§as que estÃ£o no ar.</p>
+      </div>
+      <div className="admin-store-controls">
+        <Link href="/admin/produtos" className="admin-store-manage">
+          Gerenciar peÃ§as <ArrowUpRight size={20} aria-hidden="true" />
+        </Link>
+        <Link href="/admin/produtos?novo=1" className="admin-store-add">
+          <Plus size={18} aria-hidden="true" /> Adicionar peÃ§a
+        </Link>
+      </div>
+    </section>
+  );
+}
+```
+
+## StoreFrame
+
+- Path: `components/storefront.tsx`
+- Description: Store shell that composes the public header, store main area, and footer.
+
+```tsx
+/* oxlint-disable next/no-img-element -- Product image URLs are administrator-managed. */
+'use client';
+
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { SiteLink as Link } from '@/components/site-link';
+import {
+  ArrowUpRight,
+  ArrowLeft,
+  ArrowRight,
+  ShoppingBag,
+  Trash2,
+  RefreshCw,
+  ShieldCheck,
+  UserRound,
+} from 'lucide-react';
+import { SiteHeader, SiteFooter } from '@/components/tesoob';
+import {
+  storeApi,
+  storeMessage,
+  money,
+  type Product,
+  type ProductPage,
+  type StoreDrop,
+} from '@/lib/store-api';
+import { DropCountdown } from '@/components/drop-countdown';
+
+export function StoreFrame({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <SiteHeader />
+      <main className="store-shell">{children}</main>
+      <SiteFooter />
+    </>
+  );
+}
+export function StoreNotice({
+  children,
+  retry,
+}: {
+  children: ReactNode;
+  retry?: () => void;
+}) {
+  return (
+    <div className="store-notice" aria-live="polite">
+      <div>{children}</div>
+      {retry && (
+        <button className="store-button store-button-secondary" onClick={retry}>
+          <RefreshCw size={16} />
+          Tentar novamente
+        </button>
+      )}
+    </div>
+  );
+}
+export function ProductObservation({ value }: { value?: string | null }) {
+  const observation = value?.trim();
+  return observation ? (
+    <aside className="store-observation">
+      <span>ObservaÃ§Ãµes</span>
+      <p>{observation}</p>
+    </aside>
+  ) : null;
+}
+export function ProductImage({
+  product,
+  eager = false,
+}: {
+  product: Product;
+  eager?: boolean;
+}) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  return failedUrl === product.imageUrl ? (
+    <div className="store-image-error">Imagem indisponÃ­vel</div>
+  ) : (
+    <img
+      src={product.imageUrl}
+      alt={product.name}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      referrerPolicy="no-referrer"
+      onError={() => setFailedUrl(product.imageUrl)}
+    />
+  );
+}
+export function Storefront() {
+  const [cart, setCart] = useState<Product[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [catalog, setCatalog] = useState<ProductPage | null>(null);
+  const [nextDrop, setNextDrop] = useState<StoreDrop | null>(null);
+  const [page, setPage] = useState(0);
+  const [retry, setRetry] = useState(0);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('tesoob:cart') || '[]');
+        if (Array.isArray(saved)) setCart(saved);
+      } catch {
+        localStorage.removeItem('tesoob:cart');
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  function updateCart(next: Product[]) {
+    setCart(next);
+    localStorage.setItem('tesoob:cart', JSON.stringify(next));
+  }
+  function addToCart(product: Product) {
+    if (!cart.some((item) => item.id === product.id)) updateCart([...cart, product]);
+    setCartOpen(true);
+  }
+  useEffect(() => {
+    const controller = new AbortController();
+    storeApi<ProductPage>(`/products?page=${page}`, {
+      signal: controller.signal,
+    })
+      .then((data) => {
+        setError('');
+        setCatalog(data);
+      })
+      .catch((e) => {
+        if (!controller.signal.aborted) setError(storeMessage(e));
+      });
+    return () => controller.abort();
+  }, [page, retry]);
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadNextDrop = () => {
+      storeApi<{ drop: StoreDrop | null }>('/drops/next', {
+        signal: controller.signal,
+      })
+        .then(({ drop }) => setNextDrop(drop))
+        .catch(() => {
+          if (!controller.signal.aborted) setNextDrop(null);
+        });
+    };
+    loadNextDrop();
+    const timer = window.setInterval(loadNextDrop, 60_000);
+    return () => {
+      controller.abort();
+      window.clearInterval(timer);
+    };
+  }, [retry]);
+  return (
+    <StoreFrame>
+      <div className="store-toolbar">
+        <Link href="/">
+          <ArrowLeft size={15} /> O universo Tesoob
+        </Link>
+        <Link href="/loja/conta">
+          <UserRound size={16} /> Minha conta
+        </Link>
+        <button
+          type="button"
+          className="store-cart-trigger"
+          aria-expanded={cartOpen}
+          aria-controls="store-cart"
+          onClick={() => setCartOpen((open) => !open)}
+        >
+          <ShoppingBag size={16} /> Carrinho <span>{cart.length}</span>
+        </button>
+      </div>
+      {cartOpen && (
+        <aside id="store-cart" className="store-cart" aria-label="Carrinho">
+          <div className="store-cart-heading">
+            <div>
+              <p className="store-kicker">SUA SELEÃ‡ÃƒO</p>
+              <h2>CARRINHO</h2>
+            </div>
+            <button type="button" onClick={() => setCartOpen(false)}>
+              Fechar
+            </button>
+          </div>
+          {!cart.length ? (
+            <p className="store-fine-print">Sua seleÃ§Ã£o ainda estÃ¡ vazia.</p>
+          ) : (
+            <div className="store-cart-items">
+              {cart.map((product) => (
+                <article key={product.id}>
+                  <img src={product.imageUrl} alt="" />
+                  <div>
+                    <h3>{product.name}</h3>
+                    <p>{money(product.price)}</p>
+                    <Link href={`/loja/checkout/${product.id}`}>
+                      Finalizar esta peÃ§a <ArrowUpRight size={15} />
+                    </Link>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label={`Remover ${product.name} do carrinho`}
+                    onClick={() => updateCart(cart.filter((item) => item.id !== product.id))}
+                  >
+                    <Trash2 size={17} />
+                  </button>
+                </article>
+              ))}
+            </div>
+          )}
+        </aside>
+      )}
+      <header className="store-intro">
+        <div>
+          <p className="store-kicker">TESOOB / SELEÃ‡ÃƒO AUTORAL</p>
+          <h1>
+            VISTA O<br />
+            <em>INESPERADO.</em>
+          </h1>
+        </div>
+        <div className="store-intro-note">
+          <span>01 â€” A VITRINE</span>
+          <p>
+            Recortes que surpreendem.
+            <br />
+            Detalhes que ficam.
+            <br />A prÃ³xima histÃ³ria Ã© sua.
+          </p>
+          <a href="#vitrine">
+            Explore a seleÃ§Ã£o <ArrowRight size={17} />
+          </a>
+        </div>
+      </header>
+      {nextDrop && (
+        <section
+          className="store-drop-announcement"
+          aria-labelledby="next-drop-title"
+        >
+          <div className="store-drop-announcement-copy">
+            <p className="store-kicker">PRÃ“XIMO DROP</p>
+            <h2 id="next-drop-title">{nextDrop.name}</h2>
+            <p className="store-drop-announcement-message">
+              Um novo drop serÃ¡ lanÃ§ado daqui a:
+            </p>
+          </div>
+          <DropCountdown
+            target={nextDrop.launchesAt}
+            onComplete={() => {
+              setNextDrop(null);
+              setPage(0);
+              setRetry((value) => value + 1);
+            }}
+          />
+        </section>
+      )}
+      <section
+        id="vitrine"
+        className="store-catalog"
+        aria-label="Produtos Ã  venda"
+      >
+        <div className="store-section-label">
+          <span>PEÃ‡AS EM DESTAQUE</span>
+          <span>
+            {catalog
+              ? `${catalog.totalElements.toString().padStart(2, '0')} / DISPONÃVEIS`
+              : 'TESOOB / STORE'}
+          </span>
+        </div>
+        {error ? (
+          <StoreNotice retry={() => setRetry((n) => n + 1)}>
+            {error}
+          </StoreNotice>
+        ) : !catalog ? (
+          <StoreNotice>Carregando a seleÃ§Ã£oâ€¦</StoreNotice>
+        ) : !catalog.items.length ? (
+          <StoreNotice>
+            A prÃ³xima seleÃ§Ã£o estÃ¡ sendo preparada. Volte em breve.
+          </StoreNotice>
+        ) : (
+          <div className="store-grid">
+            {catalog.items.map((product, index) => (
+              <article
+                key={product.id}
+                className={`store-card store-card-${index % 3}`}
+                style={
+                  { '--card-delay': `${(index % 6) * 65}ms` } as CSSProperties
+                }
+              >
+                <Link
+                  href={`/loja/produtos/${product.id}`}
+                  className="store-card-image"
+                  aria-label={`Conhecer ${product.name}`}
+                >
+                  <ProductImage product={product} eager={index < 2} />
+                  <span className="store-piece-number">
+                    {String(page * 12 + index + 1).padStart(2, '0')} / TESOOB
+                  </span>
+                  <span className="store-card-arrow">
+                    <ArrowUpRight size={24} />
+                  </span>
+                </Link>
+                <div className="store-card-body">
+                  <div className="store-card-title">
+                    <h2>
+                      <Link href={`/loja/produtos/${product.id}`}>
+                        {product.name}
+                      </Link>
+                    </h2>
+                    <p>{money(product.price)}</p>
+                  </div>
+                  <p className="store-description">{product.description}</p>
+                  <ProductObservation value={product.observation} />
+                  <Link
+                    className="store-text-link"
+                    href={`/loja/produtos/${product.id}`}
+                  >
+                    Conhecer a peÃ§a <ArrowUpRight size={17} />
+                  </Link>
+                  <button
+                    type="button"
+                    className="store-add-to-cart"
+                    onClick={() => addToCart(product)}
+                  >
+                    <ShoppingBag size={16} />
+                    {cart.some((item) => item.id === product.id)
+                      ? 'Na sua seleÃ§Ã£o'
+                      : 'Adicionar ao carrinho'}
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+        {catalog && catalog.totalPages > 1 && (
+          <nav className="store-pagination" aria-label="PÃ¡ginas da vitrine">
+            <button
+              disabled={page === 0}
+              onClick={() => setPage((n) => n - 1)}
+              className="store-button store-button-secondary"
+            >
+              Anterior
+            </button>
+            <span>
+              {page + 1} / {catalog.totalPages}
+            </span>
+            <button
+              disabled={page + 1 === catalog.totalPages}
+              onClick={() => setPage((n) => n + 1)}
+              className="store-button store-button-secondary"
+            >
+              PrÃ³xima
+            </button>
+          </nav>
+        )}
+      </section>
+      <div className="store-footnote">
+        <ShieldCheck size={20} />
+        <p>
+          Uma peÃ§a de cada vez. Seus dados de entrega sÃ£o solicitados somente no
+          checkout.
+        </p>
+        <span>FEITO PARA MARCAR.</span>
+      </div>
+    </StoreFrame>
+  );
+}
+export function ProductDetail({ id }: { id: string }) {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [error, setError] = useState('');
+  const [retry, setRetry] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    storeApi<Product>(`/products/${id}`, { signal: controller.signal })
+      .then((data) => {
+        setError('');
+        setProduct(data);
+      })
+      .catch((e) => {
+        if (!controller.signal.aborted) setError(storeMessage(e));
+      });
+    return () => controller.abort();
+  }, [id, retry]);
+  return (
+    <StoreFrame>
+      <Link href="/loja" className="store-back">
+        <ArrowLeft size={16} /> Voltar Ã  vitrine
+      </Link>
+      {error ? (
+        <StoreNotice retry={() => setRetry((n) => n + 1)}>{error}</StoreNotice>
+      ) : !product ? (
+        <StoreNotice>Carregando a peÃ§aâ€¦</StoreNotice>
+      ) : (
+        <div className="store-detail">
+          <div className="store-detail-image">
+            <ProductImage product={product} eager />
+          </div>
+          <div className="store-detail-copy">
+            <p className="store-kicker">TESOOB / PEÃ‡A AUTORAL</p>
+            <h1>{product.name}</h1>
+            <p className="store-price">{money(product.price)}</p>
+            <p className="store-description">{product.description}</p>
+            <ProductObservation value={product.observation} />
+            <Link
+              href={`/loja/checkout/${product.id}`}
+              className="store-button"
+            >
+              Comprar <ArrowUpRight size={20} />
+            </Link>
+            <p className="store-fine-print">
+              VocÃª entrarÃ¡ na sua conta antes de informar os dados de entrega.
+              Pagamento online em preparaÃ§Ã£o; nenhuma cobranÃ§a automÃ¡tica.
+            </p>
+          </div>
+        </div>
+      )}
+    </StoreFrame>
+  );
+}
+```
+
+

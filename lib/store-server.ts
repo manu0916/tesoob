@@ -9,6 +9,7 @@ import {
   googleConfigured,
   googleStart,
   googleCallback,
+  completeGoogleOnboarding,
 } from './store-auth';
 import {
   listProducts,
@@ -24,6 +25,7 @@ import {
   getOrder,
   listOrders,
 } from './store-orders';
+import { getUserProfile, saveUserProfile } from './store-profile';
 import { uploadProductImage, serveProductImage } from './store-images';
 import { cancelDrop, createDrop, listDrops, nextDrop } from './store-drops';
 import {
@@ -73,6 +75,19 @@ export async function handleStore(
     const db = await storeDatabase();
     if (path === '/auth/me' && method === 'GET')
       return json(await identity(db, request));
+    if (path === '/auth/google/complete' && method === 'POST')
+      return json(
+        await completeGoogleOnboarding(db, request, await readJson(request)),
+      );
+    if (path === '/account/profile' && ['GET', 'PUT'].includes(method)) {
+      const user = await customer(db, request);
+      if (!user) return fail(401, 'Entre na sua conta.');
+      if (method === 'GET')
+        return json(await getUserProfile(db, settings, user.id));
+      return json(
+        await saveUserProfile(db, settings, user.id, await readJson(request)),
+      );
+    }
     if (['/auth/register', '/auth/login'].includes(path) && method === 'POST') {
       const result = await localAuth(
         db,
@@ -176,12 +191,16 @@ export async function handleStore(
       const user = await identity(db, request);
       if (user.role === 'ADMIN')
         return json({ items: [], page: 0, totalPages: 0 });
+      if (user.onboardingRequired)
+        return fail(409, 'Conclua sua conta Google para acessar seus pedidos.');
       return json(await listOrders(db, user.id, pageNumber(url)));
     }
     if (path === '/checkout' && method === 'POST') {
       const user = await customer(db, request);
       if (!user) {
         const account = await identity(db, request);
+        if (account.role === 'CUSTOMER' && account.onboardingRequired)
+          return fail(409, 'Conclua sua conta Google antes de comprar.');
         return fail(
           account.role === 'ADMIN' ? 403 : 401,
           'Para comprar, saia da conta administrativa e entre com uma conta de cliente.',

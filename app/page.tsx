@@ -1,15 +1,6 @@
 import { siteConfig } from '@/lib/site-config';
 import { HomePage } from '@/components/tesoob';
 
-function safeJsonLd(value: unknown) {
-  return JSON.stringify(value)
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026')
-    .replace(/\u2028/g, '\\u2028')
-    .replace(/\u2029/g, '\\u2029');
-}
-
 export default function Home() {
   const organization = {
     '@context': 'https://schema.org',
@@ -41,7 +32,7 @@ export default function Home() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(organization) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
       />
       <HomePage />
     </>

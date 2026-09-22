@@ -25,7 +25,6 @@ export function StoreCheckout({ id }: { id: string }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState('');
   const [retry, setRetry] = useState(0);
   const idempotency = useRef<string | null>(null);
   useEffect(() => {
@@ -35,9 +34,13 @@ export function StoreCheckout({ id }: { id: string }) {
       storeApi<StoreUser>('/auth/me', { signal: controller.signal }),
     ])
       .then(([item, account]) => {
+        if (account.onboardingRequired) {
+          sessionStorage.setItem('store:return', `/loja/checkout/${id}`);
+          window.location.replace('/loja/conta/google');
+          return;
+        }
         setError('');
         setProduct(item);
-        setSelectedSize(item.sizes[0] || '');
         setUser(account);
       })
       .catch((e) => {
@@ -81,13 +84,10 @@ export function StoreCheckout({ id }: { id: string }) {
           productId: id,
           productVersion: product.version,
           quantity,
-          size: selectedSize || null,
           billing,
         }),
       });
-      window.location.assign(
-        `/obrigado?pedido=${encodeURIComponent(response.order.id)}`,
-      );
+      window.location.assign(`/obrigado?pedido=${encodeURIComponent(response.order.id)}`);
     } catch (e) {
       setError(storeMessage(e));
       if (e instanceof StoreError && e.status === 401)
@@ -255,24 +255,6 @@ export function StoreCheckout({ id }: { id: string }) {
               <p className="store-kicker">SUA ESCOLHA</p>
               <h2>{product.name}</h2>
               <ProductObservation value={product.observation} />
-              {!!product.sizes.length && (
-                <label>
-                  <span id="checkout-size-label">Tamanho</span>
-                  <select
-                    aria-labelledby="checkout-size-label"
-                    value={selectedSize}
-                    disabled={busy}
-                    required
-                    onChange={(event) => setSelectedSize(event.target.value)}
-                  >
-                    {product.sizes.map((size) => (
-                      <option key={size} value={size}>
-                        {size}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              )}
               <label>
                 <span id="checkout-quantity-label">Quantidade</span>
                 <select

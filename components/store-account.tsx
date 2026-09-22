@@ -3,6 +3,7 @@
 import { useEffect, useState, type SubmitEvent } from 'react';
 import { SiteLink as Link } from '@/components/site-link';
 import { ArrowLeft, ArrowUpRight, LogOut, ShieldCheck } from 'lucide-react';
+import { GoogleMark } from '@/components/google-mark';
 import { StoreFrame, StoreNotice } from '@/components/storefront';
 import {
   storeApi,
@@ -53,6 +54,10 @@ export function StoreAccount() {
       .catch(() => {});
     storeApi<StoreUser>('/auth/me', { signal: controller.signal })
       .then((value) => {
+        if (value.onboardingRequired) {
+          window.location.replace('/loja/conta/google');
+          return;
+        }
         setUser(value);
         if (params.get('google') === 'success' && destination !== '/loja') {
           sessionStorage.removeItem('store:return');
@@ -97,7 +102,9 @@ export function StoreAccount() {
     setNotice('');
     try {
       const payload = {
-        ...(register ? { name: formText(data, 'name'), legalAccepted } : {}),
+        ...(register
+          ? { name: formText(data, 'name'), legalAccepted }
+          : {}),
         email,
         password: formText(data, 'password'),
       };
@@ -183,7 +190,6 @@ export function StoreAccount() {
               <article className="store-order-row" key={order.id}>
                 <div>
                   <h3>{order.productName}</h3>
-                  {order.productSize && <p>Tamanho {order.productSize}</p>}
                   <p>
                     {order.quantity} peça(s) ·{' '}
                     {new Date(order.createdAt).toLocaleDateString('pt-BR')}
@@ -194,12 +200,12 @@ export function StoreAccount() {
                   <strong>{money(order.total)}</strong>
                   <span>
                     {order.status === 'AWAITING_INTEGRATION'
-                      ? 'Pedido pendente'
+                      ? 'Aguardando integração de pagamento'
                       : order.status === 'PAID'
-                        ? 'Em produção'
+                        ? 'Pago'
                         : order.status === 'CANCELLED'
                           ? 'Cancelado'
-                          : 'Pedido aceito'}
+                          : 'Aguardando pagamento'}
                   </span>
                 </div>
               </article>
@@ -321,8 +327,7 @@ export function StoreAccount() {
                     <Link href="/termos-de-uso">Termos de Uso</Link> e a{' '}
                     <Link href="/politica-de-privacidade">
                       Política de Privacidade
-                    </Link>
-                    .
+                    </Link>.
                   </span>
                 </label>
               )}
@@ -335,29 +340,24 @@ export function StoreAccount() {
             {google ? (
               <>
                 <a
-                  href={
-                    register
-                      ? '/store-api/oauth2/authorization/google?legal=1'
-                      : '/store-api/oauth2/authorization/google'
-                  }
-                  onClick={(event) => {
-                    if (register && !legalAccepted) {
-                      event.preventDefault();
-                      setError(
-                        'Aceite os Termos de Uso e a Política de Privacidade para criar sua conta.',
-                      );
-                      return;
-                    }
+                  href="/store-api/oauth2/authorization/google"
+                  onClick={() => {
                     sessionStorage.setItem('store:return', next);
                   }}
-                  className="store-button store-button-secondary"
+                  className="store-button store-button-secondary store-google-button"
                 >
-                  Continuar com Google <ArrowUpRight size={18} />
+                  <span className="store-google-button-label">
+                    <span className="store-google-icon">
+                      <GoogleMark />
+                    </span>
+                    Continuar com Google
+                  </span>
+                  <ArrowUpRight size={18} />
                 </a>
                 {!register && (
                   <p className="store-fine-print">
-                    Primeira vez com Google? Escolha “Criar conta” e aceite os
-                    termos antes de continuar.
+                    Primeira vez com Google? Na próxima etapa você escolhe seu
+                    apelido e aceita os termos.
                   </p>
                 )}
               </>
@@ -385,9 +385,7 @@ export function StoreAccount() {
               setError('');
             }}
           >
-            {register
-              ? 'Já tem uma conta? Entre.'
-              : 'Ainda não tem conta? Crie agora.'}
+            {register ? 'Já tem uma conta? Entre.' : 'Ainda não tem conta? Crie agora.'}
           </button>
         </p>
       )}

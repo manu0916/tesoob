@@ -15,7 +15,7 @@ export function DropCountdown({
   compact?: boolean;
   onComplete?: () => void;
 }) {
-  const [milliseconds, setMilliseconds] = useState(() => remaining(target));
+  const [milliseconds, setMilliseconds] = useState(0);
   const completed = useRef(false);
   const complete = useRef(onComplete);
 

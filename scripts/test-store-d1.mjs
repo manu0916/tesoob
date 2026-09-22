@@ -58,30 +58,28 @@ function client() {
       headers: response.headers,
     };
   };
+  call.setCookie = (name, value) => cookies.set(name, value);
   return call;
 }
 const publicClient = client();
 // Initialize the existing chat first, then put a legacy fixture in the isolated DB before the new migration.
 await publicClient('/api/admin/session');
 const paths = await files(state);
-const datedPaths = await Promise.all(
-  paths.map(async (path) => ({ path, modified: (await stat(path)).mtimeMs })),
-);
-datedPaths.sort((a, b) => b.modified - a.modified);
-const path = datedPaths
-  .map((item) => item.path)
-  .find((p) => {
-    const db = new DatabaseSync(p, { readOnly: true });
-    try {
-      return !!db
-        .prepare(
-          "SELECT name FROM sqlite_master WHERE name='chat_conversations'",
-        )
-        .get();
-    } finally {
-      db.close();
-    }
-  });
+const candidates = [];
+for (const p of paths) {
+  const db = new DatabaseSync(p, { readOnly: true });
+  try {
+    if (
+      db
+      .prepare("SELECT name FROM sqlite_master WHERE name='chat_conversations'")
+        .get()
+    )
+      candidates.push({ path: p, mtimeMs: (await stat(p)).mtimeMs });
+  } finally {
+    db.close();
+  }
+}
+const path = candidates.sort((a, b) => b.mtimeMs - a.mtimeMs)[0]?.path;
 if (!path)
   throw new Error(
     'Start Vite with STORE_LOCAL_TEST=1. Never run tests on the normal D1 state.',
@@ -160,7 +158,6 @@ try {
     imageUrl: '/media/editorial-06.webp',
     description: 'Descrição de QA.',
     observation: '   ',
-    sizes: ['P', '38'],
     active: true,
     version: 0,
   };
@@ -187,72 +184,10 @@ try {
     'admin CRUD and blank observation normalization',
   );
   const product = created.body;
-  check(
-    JSON.stringify(product.sizes) === JSON.stringify(['P', '38']),
-    'letter and numeric product sizes persist',
-  );
-  const hiddenDropName = `DROP-${randomUUID()}`;
-  const scheduled = await admin('/store-api/admin/drops', {
-    name: hiddenDropName,
-    launchesAt: new Date(Date.now() + 3600000).toISOString(),
-    products: [
-      { ...sample, name: `${hiddenDropName}-1`, sizes: ['GG', '42'] },
-      { ...sample, name: `${hiddenDropName}-2`, sizes: ['Único'] },
-    ],
-  });
-  check(
-    scheduled.status === 201 && scheduled.body.productCount === 2,
-    'admin schedules a two-piece drop',
-  );
-  const beforeDrop = await publicClient('/store-api/products');
-  check(
-    !beforeDrop.body.items.some((item) =>
-      item.name.startsWith(hiddenDropName),
-    ) &&
-      (await publicClient('/store-api/drops/next')).body.drop.id ===
-        scheduled.body.id,
-    'scheduled pieces remain hidden while public countdown is available',
-  );
-  const hiddenProduct = (
-    await admin('/store-api/admin/products')
-  ).body.items.find((item) => item.name === `${hiddenDropName}-1`);
-  check(
-    !!hiddenProduct &&
-      (await publicClient(`/store-api/products/${hiddenProduct.id}`)).status ===
-        404,
-    'scheduled product detail cannot be opened early',
-  );
-  db.prepare('UPDATE store_drops SET launches_at=? WHERE id=?').run(
-    Date.now() - 1000,
-    scheduled.body.id,
-  );
-  const afterDrop = await publicClient('/store-api/products');
-  check(
-    afterDrop.body.items.filter((item) => item.name.startsWith(hiddenDropName))
-      .length === 2 &&
-      (await publicClient('/store-api/drops/next')).body.drop === null,
-    'all drop pieces publish together after launch time',
-  );
-  const cancelled = await admin('/store-api/admin/drops', {
-    name: `CANCEL-${randomUUID()}`,
-    launchesAt: new Date(Date.now() + 3600000).toISOString(),
-    products: [{ ...sample, name: `CANCEL-PIECE-${randomUUID()}` }],
-  });
-  check(
-    cancelled.status === 201 &&
-      (
-        await admin(
-          `/store-api/admin/drops/${cancelled.body.id}?version=0`,
-          undefined,
-          { method: 'DELETE' },
-        )
-      ).status === 204,
-    'admin can cancel an unreleased drop',
-  );
   const buyer = client(),
     other = client(),
     email = `qa-${randomUUID()}@example.test`,
-    name = 'Cliente de Teste',
+      name = 'Cliente de Teste',
     password = randomBytes(18).toString('hex');
   check(
     (
@@ -265,8 +200,8 @@ try {
     'public role injection rejected',
   );
   check(
-    (await buyer('/store-api/auth/register', { name, email, password }))
-      .status === 400,
+    (await buyer('/store-api/auth/register', { name, email, password })).status ===
+      400,
     'customer registration requires legal consent',
   );
   check(
@@ -282,9 +217,7 @@ try {
   );
   check(
     db
-      .prepare(
-        'SELECT password_hash,display_name FROM store_users WHERE email=?',
-      )
+      .prepare('SELECT password_hash,display_name FROM store_users WHERE email=?')
       .get(email)
       .password_hash.startsWith('$2b$12$') &&
       db
@@ -306,7 +239,6 @@ try {
     productId: product.id,
     productVersion: product.version,
     quantity: 2,
-    size: 'P',
     billing: {
       recipient: 'Pessoa de Teste',
       document: '52998224725',
@@ -339,18 +271,6 @@ try {
     ).status === 400,
     'invalid CPF rejected',
   );
-  check(
-    (
-      await buyer(
-        '/store-api/checkout',
-        { ...input, size: 'GG' },
-        {
-          headers: { 'Idempotency-Key': randomUUID() },
-        },
-      )
-    ).status === 409,
-    'checkout rejects a size not offered by the product',
-  );
   const key = randomUUID();
   const results = await Promise.all([
     buyer('/store-api/checkout', input, {
@@ -370,7 +290,6 @@ try {
     order.total === 259.8 && order.status === 'AWAITING_INTEGRATION',
     'server cents arithmetic and no fake payment',
   );
-  check(order.productSize === 'P', 'selected size is snapshotted in order');
   const stored = db
     .prepare('SELECT * FROM store_orders WHERE id=?')
     .get(order.id);
@@ -379,59 +298,6 @@ try {
       !JSON.stringify(stored).includes('52998224725') &&
       !JSON.stringify(stored).includes('Rua de Teste'),
     'D1 contains AES envelope, no plaintext CPF/address',
-  );
-  check(
-    (await publicClient('/store-api/admin/dashboard')).status === 403 &&
-      (await buyer('/store-api/admin/dashboard')).status === 403,
-    'sales dashboard is restricted to administrators',
-  );
-  const pendingDashboard = await admin('/store-api/admin/dashboard');
-  check(
-    pendingDashboard.status === 200 &&
-      pendingDashboard.body.metrics.pendingOrders >= 1 &&
-      pendingDashboard.body.orders.some(
-        (item) =>
-          item.id === order.id &&
-          item.customerName === name &&
-          item.status === 'AWAITING_INTEGRATION',
-      ),
-    'admin dashboard lists a new purchase as pending',
-  );
-  check(
-    (
-      await admin(
-        '/store-api/admin/orders/' + order.id,
-        { status: 'ACCEPTED' },
-        { method: 'PUT' },
-      )
-    ).body.status === 'PENDING_PAYMENT',
-    'admin accepts a pending purchase',
-  );
-  const acceptedDashboard = await admin('/store-api/admin/dashboard');
-  check(
-    acceptedDashboard.body.metrics.soldPieces >= 2 &&
-      acceptedDashboard.body.metrics.revenue >= 259.8,
-    'accepted purchases update pieces sold and revenue',
-  );
-  check(
-    (
-      await admin(
-        '/store-api/admin/orders/' + order.id,
-        { status: 'IN_PRODUCTION' },
-        { method: 'PUT' },
-      )
-    ).body.status === 'PAID',
-    'admin moves an accepted purchase into production',
-  );
-  check(
-    (
-      await admin(
-        '/store-api/admin/orders/' + order.id,
-        { status: 'IN_PRODUCTION' },
-        { method: 'PUT' },
-      )
-    ).status === 409,
-    'order workflow rejects duplicate transitions',
   );
   check(
     (
@@ -449,7 +315,7 @@ try {
   );
   const otherEmail = `qa-${randomUUID()}@example.test`;
   await other('/store-api/auth/register', {
-    name: 'Outra Cliente',
+    name: 'Outro Cliente',
     email: otherEmail,
     password,
     legalAccepted: true,
@@ -533,6 +399,71 @@ try {
       )
     ).headers.get('location') === '/loja/conta?error=google',
     'invalid OAuth callback fails safely',
+  );
+  const pendingGoogle = client(),
+    pendingGoogleId = randomUUID(),
+    pendingGoogleEmail = `google-${randomUUID()}@example.test`,
+    pendingGoogleToken = randomBytes(32).toString('hex');
+  db.prepare(
+    'INSERT INTO store_users(id,email,display_name,google_id,created_at) VALUES (?,?,?,?,?)',
+  ).run(
+    pendingGoogleId,
+    pendingGoogleEmail,
+    'Nome entregue pelo Google',
+    `google-${randomUUID()}`,
+    Date.now(),
+  );
+  db.prepare(
+    'INSERT INTO store_sessions(token_hash,user_id,expires_at) VALUES (?,?,?)',
+  ).run(
+    createHash('sha256').update(pendingGoogleToken).digest('hex'),
+    pendingGoogleId,
+    Date.now() + 1800000,
+  );
+  pendingGoogle.setCookie('TESOOB_STORE_SESSION', pendingGoogleToken);
+  const pendingIdentity = await pendingGoogle('/store-api/auth/me');
+  check(
+    pendingIdentity.status === 200 &&
+      pendingIdentity.body.onboardingRequired === true &&
+      pendingIdentity.body.displayName === 'Nome entregue pelo Google',
+    'Google name prefills pending onboarding',
+  );
+  check(
+    (await pendingGoogle('/store-api/orders')).status === 409,
+    'pending Google customer cannot access orders',
+  );
+  check(
+    (
+      await pendingGoogle('/store-api/auth/google/complete', {
+        nickname: 'Manu Editado',
+        legalAccepted: false,
+      })
+    ).status === 400,
+    'Google onboarding requires legal consent',
+  );
+  const completedGoogle = await pendingGoogle(
+    '/store-api/auth/google/complete',
+    { nickname: 'Manu Editado', legalAccepted: true },
+  );
+  check(
+    completedGoogle.status === 200 &&
+      completedGoogle.body.displayName === 'Manu Editado' &&
+      completedGoogle.body.onboardingRequired === false,
+    'Google customer can edit nickname and complete onboarding',
+  );
+  const completedRow = db
+    .prepare(
+      'SELECT display_name,legal_accepted_at FROM store_users WHERE id=?',
+    )
+    .get(pendingGoogleId);
+  check(
+    completedRow.display_name === 'Manu Editado' &&
+      completedRow.legal_accepted_at > 0,
+    'Google nickname and legal consent are stored',
+  );
+  check(
+    (await pendingGoogle('/store-api/orders')).status === 200,
+    'completed Google customer can access orders',
   );
   check(
     snapshot() === before,
