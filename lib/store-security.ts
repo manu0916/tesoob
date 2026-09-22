@@ -124,9 +124,16 @@ export function credentials(
   data: Record<string, unknown>,
   registering: boolean,
 ) {
-  fields(data, registering ? ['name', 'email', 'password'] : ['email', 'password']);
+  fields(
+    data,
+    registering
+      ? ['name', 'email', 'password', 'legalAccepted']
+      : ['email', 'password'],
+  );
   const email = textField(data, 'email', 254).toLowerCase();
   const name = registering ? textField(data, 'name', 140) : '';
+  if (registering && data.legalAccepted !== true)
+    return fail(400, 'Aceite os Termos de Uso e a Política de Privacidade.');
   const password = data.password;
   if (
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||

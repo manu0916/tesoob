@@ -58,14 +58,13 @@ export async function saveProduct(
   if (uploaded) {
     if (!images) return fail(503, 'O armazenamento de imagens ainda não foi configurado.');
     if (!(await images.head(`products/${uploaded}`))) return fail(400, 'Envie a foto novamente antes de salvar.');
-  } else if (!/^\/media\/[A-Za-z0-9._-]+\.(webp|png|jpe?g)$/.test(image)) {
-    try {
-      const url = new URL(image);
-      if (url.protocol !== 'https:' || url.username || url.password)
-        throw new Error();
-    } catch {
-      return fail(400, 'Use URL HTTPS ou arquivo em /media/.');
-    }
+  } else if (
+    !/^\/media\/[A-Za-z0-9._-]+\.(webp|png|jpe?g)$/.test(image)
+  ) {
+    return fail(
+      400,
+      'Use uma imagem enviada pelo ateliê ou um arquivo local em /media/.',
+    );
   }
   if (
     typeof data.price !== 'number' ||

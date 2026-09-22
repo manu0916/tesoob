@@ -19,9 +19,11 @@ export function StoreAccount() {
   const [user, setUser] = useState<StoreUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [register, setRegister] = useState(false);
+  const [legalAccepted, setLegalAccepted] = useState(false);
   const [google, setGoogle] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [enteredEmail, setEnteredEmail] = useState('');
   const [notice, setNotice] = useState('');
   const [next, setNext] = useState('/loja');
   const [orders, setOrders] = useState<Order[]>([]);
@@ -89,13 +91,16 @@ export function StoreAccount() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    const email = formText(data, 'email');
     setBusy(true);
     setError('');
     setNotice('');
     try {
       const payload = {
-        ...(register ? { name: formText(data, 'name') } : {}),
-        email: formText(data, 'email'),
+        ...(register
+          ? { name: formText(data, 'name'), legalAccepted }
+          : {}),
+        email,
         password: formText(data, 'password'),
       };
       if (register) {
@@ -115,6 +120,7 @@ export function StoreAccount() {
         if (next !== '/loja') window.location.assign(next);
       }
     } catch (e) {
+      setEnteredEmail(email);
       setError(storeMessage(e));
     } finally {
       setBusy(false);
@@ -245,6 +251,8 @@ export function StoreAccount() {
                 aria-pressed={!register}
                 onClick={() => {
                   setRegister(false);
+                  setLegalAccepted(false);
+                  setEnteredEmail('');
                   setError('');
                 }}
               >
@@ -282,6 +290,8 @@ export function StoreAccount() {
                   autoComplete="email"
                   required
                   maxLength={254}
+                  value={enteredEmail}
+                  onChange={(event) => setEnteredEmail(event.target.value)}
                 />
               </label>
               <label>
@@ -299,6 +309,23 @@ export function StoreAccount() {
               <p id="password-hint" className="store-fine-print">
                 Use pelo menos 12 caracteres. A senha é protegida por hash.
               </p>
+              {register && (
+                <label className="store-checkbox store-legal-consent">
+                  <input
+                    type="checkbox"
+                    checked={legalAccepted}
+                    onChange={(event) => setLegalAccepted(event.target.checked)}
+                    required
+                  />
+                  <span>
+                    Li e aceito os{' '}
+                    <Link href="/termos-de-uso">Termos de Uso</Link> e a{' '}
+                    <Link href="/politica-de-privacidade">
+                      Política de Privacidade
+                    </Link>.
+                  </span>
+                </label>
+              )}
               <button disabled={busy} className="store-button" type="submit">
                 {busy ? 'Aguarde…' : register ? 'Criar minha conta' : 'Entrar'}
                 <ArrowUpRight size={18} />
@@ -306,13 +333,34 @@ export function StoreAccount() {
             </form>
             <div className="store-divider">ou</div>
             {google ? (
-              <a
-                href="/store-api/oauth2/authorization/google"
-                onClick={() => sessionStorage.setItem('store:return', next)}
-                className="store-button store-button-secondary"
-              >
-                Continuar com Google <ArrowUpRight size={18} />
-              </a>
+              <>
+                <a
+                  href={
+                    register
+                      ? '/store-api/oauth2/authorization/google?legal=1'
+                      : '/store-api/oauth2/authorization/google'
+                  }
+                  onClick={(event) => {
+                    if (register && !legalAccepted) {
+                      event.preventDefault();
+                      setError(
+                        'Aceite os Termos de Uso e a Política de Privacidade para criar sua conta.',
+                      );
+                      return;
+                    }
+                    sessionStorage.setItem('store:return', next);
+                  }}
+                  className="store-button store-button-secondary"
+                >
+                  Continuar com Google <ArrowUpRight size={18} />
+                </a>
+                {!register && (
+                  <p className="store-fine-print">
+                    Primeira vez com Google? Escolha “Criar conta” e aceite os
+                    termos antes de continuar.
+                  </p>
+                )}
+              </>
             ) : (
               <p className="store-fine-print">
                 Login com Google ainda não disponível.
@@ -328,7 +376,17 @@ export function StoreAccount() {
       )}
       {error && (
         <p className="store-error" role="alert">
-          {error}
+          {error}{' '}
+          <button
+            type="button"
+            className="store-error-action"
+            onClick={() => {
+              setRegister((current) => !current);
+              setError('');
+            }}
+          >
+            {register ? 'Já tem uma conta? Entre.' : 'Ainda não tem conta? Crie agora.'}
+          </button>
         </p>
       )}
     </StoreFrame>

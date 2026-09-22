@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /conta
+Disallow: /loja/conta
+Disallow: /loja/checkout/
+Disallow: /obrigado
+Disallow: /store-api/
+Disallow: /api/
+
+Sitemap: https://tesoob.pages.dev/sitemap.xml

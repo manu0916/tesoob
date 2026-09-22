@@ -42,7 +42,12 @@ await writeFile(
   JSON.stringify({
     version: 1,
     include: ['/*'],
-    exclude: ['/media/*', '/fonts/*', '/_next/static/*'],
+    exclude: [
+      '/media/*',
+      '/fonts/*',
+      '/_next/static/*',
+      '/google0596062146e3b44e.html',
+    ],
   }),
 );
 await writeFile(

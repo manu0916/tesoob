@@ -194,10 +194,20 @@ try {
     'public role injection rejected',
   );
   check(
+    (await buyer('/store-api/auth/register', { name, email, password })).status ===
+      400,
+    'customer registration requires legal consent',
+  );
+  check(
     (
-      await buyer('/store-api/auth/register', { name, email, password })
+      await buyer('/store-api/auth/register', {
+        name,
+        email,
+        password,
+        legalAccepted: true,
+      })
     ).status === 201,
-    'customer registration',
+    'customer registration records legal consent',
   );
   check(
     db

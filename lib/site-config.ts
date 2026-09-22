@@ -3,8 +3,10 @@ export const siteConfig = {
   name: 'Tesoob',
   instagram: 'https://www.instagram.com/vistatesoob/',
   creatorInstagram: 'https://www.instagram.com/luciorique02/',
+  email: 'tesoob.site@gmail.com',
+  locality: 'Campos Gerais, Minas Gerais',
   whatsappNumber: null as string | null,
-  publicOrigin: '',
+  publicOrigin: 'https://tesoob.pages.dev',
 };
 
 export function validWhatsAppNumber(number: string | null): number is string {

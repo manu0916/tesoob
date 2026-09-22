@@ -1,0 +1,16 @@
+# Global response protections for Cloudflare Pages.
+#
+# The current Vinext SSR bootstrap emits inline startup data, so the policy
+# keeps unsafe-inline temporarily. Replace it with per-request nonces/hashes
+# when the renderer exposes them.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; font-src 'self'; connect-src 'self'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Cache content-hashed assets immutably.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

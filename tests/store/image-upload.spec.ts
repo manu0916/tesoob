@@ -1,5 +1,5 @@
 import { test, expect, type APIRequestContext } from '@playwright/test';
-import { randomBytes, randomUUID, createHash } from 'node:crypto';
+import { randomUUID, createHash } from 'node:crypto';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
@@ -9,7 +9,9 @@ import { validWebp } from '../../lib/store-image-format';
 // Real D1 + R2 local integration. NEVER point this suite at deployed URLs.
 // Start Pages with --port 4191 --persist-to .wrangler/upload-tests.
 test.describe.configure({ mode: 'serial' });
-const token = randomBytes(32).toString('hex');
+const token = Buffer.from(crypto.getRandomValues(new Uint8Array(32))).toString(
+  'hex',
+);
 const id = randomUUID();
 
 test.beforeAll(async ({ request, baseURL }) => {

@@ -1,5 +1,6 @@
 import migration from '@/drizzle/0002_storefront.sql?raw';
 import userNameMigration from '@/drizzle/0003_store_user_name.sql?raw';
+import legalConsentMigration from '@/drizzle/0004_store_legal_consent.sql?raw';
 import { database as chatDatabase } from './chat-server';
 import { digest, fail } from './store-security';
 
@@ -18,17 +19,22 @@ export async function storeDatabase() {
           'CREATE TABLE IF NOT EXISTS store_migrations (id text PRIMARY KEY NOT NULL)',
         )
         .run();
-      const applied = await db
-        .prepare('SELECT id FROM store_migrations WHERE id=?')
-        .bind('0003_store_user_name')
-        .first();
-      if (!applied)
-        await db.batch([
-          db.prepare(userNameMigration.trim()),
-          db
-            .prepare('INSERT INTO store_migrations(id) VALUES (?)')
-            .bind('0003_store_user_name'),
-        ]);
+      for (const [id, sql] of [
+        ['0003_store_user_name', userNameMigration],
+        ['0004_store_legal_consent', legalConsentMigration],
+      ]) {
+        const applied = await db
+          .prepare('SELECT id FROM store_migrations WHERE id=?')
+          .bind(id)
+          .first();
+        if (!applied)
+          await db.batch([
+            ...sql
+              .split('--> statement-breakpoint')
+              .map((statement) => db.prepare(statement.trim())),
+            db.prepare('INSERT INTO store_migrations(id) VALUES (?)').bind(id),
+          ]);
+      }
     })
     .catch((error) => {
       initialized = undefined;

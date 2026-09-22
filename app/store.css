@@ -1,6 +1,8 @@
 /* Storefront: translucent surfaces layered over the Tesoob editorial language. */
 .store-shell {
   --store-accent: #e14b36;
+  width: 100%;
+  min-width: 0;
   max-width: 1440px;
   margin: auto;
   padding: 30px 5% 80px;
@@ -505,6 +507,10 @@
   gap: 10%;
   margin: 30px auto;
   max-width: 1060px;
+  min-width: 0;
+}
+.store-auth-layout > * {
+  min-width: 0;
 }
 .store-auth-story {
   padding: 40px 0;
@@ -524,6 +530,8 @@
   margin-top: 35px;
 }
 .store-auth-form {
+  width: 100%;
+  max-width: 100%;
   padding: 32px;
   align-self: start;
 }
@@ -626,6 +634,15 @@
   line-height: 1.7;
   color: #ffbca9;
   margin: 22px 0;
+}
+.store-error-action {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #ffe0d3;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .store-success {
   display: flex;
@@ -797,6 +814,65 @@
 .store-checkout-success .store-button {
   margin-top: 30px;
 }
+.store-thank-you {
+  min-height: 62vh;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: clamp(55px, 10vw, 130px) 0;
+}
+.store-thank-you-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: #c2d69e;
+  font-size: 10px;
+  letter-spacing: 1.4px;
+}
+.store-thank-you-mark svg {
+  padding: 7px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #b3cd8b66;
+}
+.store-thank-you > .store-kicker { margin-top: 45px; }
+.store-thank-you h1 { font-size: clamp(58px, 9vw, 126px); }
+.store-thank-you-copy {
+  max-width: 450px;
+  margin-top: 30px;
+  color: #c2c3b9;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.store-thank-you-reference {
+  max-width: 600px;
+  margin-top: 32px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.store-thank-you-reference strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--paper);
+  font: 600 12px/1.5 'Manrope', sans-serif;
+  overflow-wrap: anywhere;
+}
+.store-thank-you-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 26px;
+  margin-top: 38px;
+}
+.store-thank-you-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--paper);
+  font-size: 12px;
+}
 .store-admin-heading {
   display: flex;
   align-items: end;
@@ -844,6 +920,22 @@
   min-height: 20px;
   margin: 0;
   accent-color: var(--primary);
+}
+.store-shell .store-legal-consent {
+  align-items: flex-start;
+  margin: 22px 0 0;
+  color: #bfc2b6;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.store-shell .store-legal-consent input {
+  flex: none;
+  margin-top: 1px;
+}
+.store-legal-consent a {
+  color: var(--paper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .store-admin-row {
   display: flex;
@@ -1075,10 +1167,9 @@
     padding: 0;
   }
   .store-auth-story h1 {
-    font-size: 64px;
-  }
-  .store-auth-story h1 br:last-child {
-    display: none;
+    max-width: 100%;
+    font-size: clamp(52px, 16vw, 64px);
+    overflow-wrap: normal;
   }
   .store-auth-story > p:not(.store-kicker) {
     margin-top: 23px;
@@ -1088,7 +1179,7 @@
     margin-top: 20px;
   }
   .store-auth-form {
-    padding: 25px;
+    padding: clamp(20px, 6vw, 25px);
   }
   .store-shell input,
   .store-shell select,

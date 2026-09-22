@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { SiteLink as Link } from '@/components/site-link';
-import { ArrowLeft, ArrowUpRight, LockKeyhole, Check } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, LockKeyhole } from 'lucide-react';
 import {
   StoreFrame,
   StoreNotice,
@@ -16,7 +16,6 @@ import {
   formText,
   type Product,
   type StoreUser,
-  type CheckoutResult,
 } from '@/lib/store-api';
 
 export function StoreCheckout({ id }: { id: string }) {
@@ -26,7 +25,6 @@ export function StoreCheckout({ id }: { id: string }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [result, setResult] = useState<CheckoutResult | null>(null);
   const [retry, setRetry] = useState(0);
   const idempotency = useRef<string | null>(null);
   useEffect(() => {
@@ -74,7 +72,7 @@ export function StoreCheckout({ id }: { id: string }) {
       state: text('state'),
     };
     try {
-      const response = await storeApi<CheckoutResult>('/checkout', {
+      const response = await storeApi<{ order: { id: string } }>('/checkout', {
         method: 'POST',
         headers: { 'Idempotency-Key': idempotency.current },
         body: JSON.stringify({
@@ -84,8 +82,7 @@ export function StoreCheckout({ id }: { id: string }) {
           billing,
         }),
       });
-      form.reset();
-      setResult(response);
+      window.location.assign(`/obrigado?pedido=${encodeURIComponent(response.order.id)}`);
     } catch (e) {
       setError(storeMessage(e));
       if (e instanceof StoreError && e.status === 401)
@@ -101,22 +98,7 @@ export function StoreCheckout({ id }: { id: string }) {
       <Link href={`/loja/produtos/${id}`} className="store-back">
         <ArrowLeft size={16} /> Voltar à peça
       </Link>
-      {result ? (
-        <section className="store-glass store-checkout-success">
-          <Check size={40} />
-          <p className="store-kicker">PEDIDO REGISTRADO</p>
-          <h1>
-            O PRÓXIMO
-            <br />
-            PASSO ESTÁ POR VIR.
-          </h1>
-          <p>{result.payment.message}</p>
-          <p className="store-fine-print">Referência: {result.order.id}</p>
-          <Link href="/loja/conta" className="store-button">
-            Acompanhar meus pedidos <ArrowUpRight size={18} />
-          </Link>
-        </section>
-      ) : loading ? (
+      {loading ? (
         <StoreNotice>Preparando seu checkout…</StoreNotice>
       ) : !product || !user ? (
         <StoreNotice retry={() => setRetry((n) => n + 1)}>

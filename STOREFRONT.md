@@ -87,6 +87,43 @@ A UI continua em `/loja`, `/loja/produtos/[id]`, `/loja/conta`, `/loja/checkout/
 
 ## Desenvolvimento e verificação
 
+### Esqueci a senha do administrador
+
+No terminal interativo, dentro de `site`, execute:
+
+```powershell
+npm run admin:reset -- --email SEU_EMAIL_ADMIN
+```
+
+Para conferir somente a conexão e a existência da conta, sem pedir senha nem
+alterar o banco, acrescente `--check` ao final desse comando.
+
+O utilitário confirma a conta no D1 de **produção**, mostra o banco de destino e
+pede que você digite `REDEFINIR`. Em seguida, digite a nova senha duas vezes
+(12 a 128 caracteres). A digitação fica oculta: não aparecem letras nem asteriscos.
+Não envie a senha no chat nem a coloque em argumentos, arquivos ou variáveis de ambiente.
+
+O comando usa o login Cloudflare já disponível no Wrangler. Se não houver acesso,
+execute `npx wrangler login` e tente novamente. Apenas a senha da conta selecionada
+e suas sessões em `chat_admin_sessions` são alteradas. O e-mail, produtos, pedidos,
+clientes e conversas são preservados. Não é necessário publicar o site novamente.
+
+O formato PBKDF2 é mantido para compatibilidade com o login administrativo existente.
+A senha original não é enviada ao Wrangler; somente o hash derivado entra na consulta.
+Logs locais e telemetria do Wrangler são desativados nesse processo. O hash trafega
+como argumento do processo filho; use somente um computador confiável.
+
+A mensagem de sucesso exige confirmação da atualização e ausência de sessões
+anteriores. Se a conexão falhar depois do envio, o resultado pode ser incerto:
+execute novamente para concluir a redefinição e a revogação. Não se promete rollback
+nessa situação. Evite logins simultâneos durante a execução.
+
+Teste sem acesso ao banco remoto:
+
+```powershell
+node --test scripts/reset-admin-password.test.mjs
+```
+
 ### Navegação no Pages
 
 Os links internos usam `components/site-link.tsx` (âncoras nativas). No bundle

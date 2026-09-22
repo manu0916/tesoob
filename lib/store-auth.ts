@@ -24,6 +24,7 @@ type UserRow = {
   id: string;
   email: string;
   display_name: string | null;
+  legal_accepted_at: number | null;
   password_hash: string | null;
   google_id: string | null;
   enabled: number;
@@ -100,9 +101,9 @@ export async function localAuth(
     const passwordHash = await hashPassword(password);
     const result = await db
       .prepare(
-        `INSERT INTO store_users(id,email,display_name,password_hash,created_at) VALUES (?,?,?,?,?) ON CONFLICT(email) DO NOTHING`,
+        `INSERT INTO store_users(id,email,display_name,password_hash,legal_accepted_at,created_at) VALUES (?,?,?,?,?,?) ON CONFLICT(email) DO NOTHING`,
       )
-      .bind(id, email, name, passwordHash, Date.now())
+      .bind(id, email, name, passwordHash, Date.now(), Date.now())
       .run();
     if (!result.meta.changes)
       return fail(409, 'Não foi possível cadastrar este e-mail.');
@@ -178,16 +179,23 @@ export async function googleStart(
   await throttle(db, request, 'google-start', 15);
   const state = randomToken(),
     verifier = randomToken(),
-    nonce = randomToken();
+    nonce = randomToken(),
+    legalAccepted = new URL(request.url).searchParams.get('legal') === '1';
   await db.batch([
     db
       .prepare('DELETE FROM store_oauth_states WHERE expires_at < ?')
       .bind(Date.now()),
     db
       .prepare(
-        'INSERT INTO store_oauth_states(state_hash,verifier,nonce,expires_at) VALUES (?,?,?,?)',
+        'INSERT INTO store_oauth_states(state_hash,verifier,nonce,legal_accepted,expires_at) VALUES (?,?,?,?,?)',
       )
-      .bind(await digest(state), verifier, nonce, Date.now() + 300000),
+      .bind(
+        await digest(state),
+        verifier,
+        nonce,
+        legalAccepted ? 1 : 0,
+        Date.now() + 300000,
+      ),
   ]);
   const challenge = btoa(
     String.fromCharCode(
@@ -252,10 +260,10 @@ export async function googleCallback(
     // DELETE RETURNING consumes the state atomically; callbacks cannot be replayed.
     const flow = await db
       .prepare(
-        'DELETE FROM store_oauth_states WHERE state_hash=? AND expires_at>? RETURNING verifier,nonce',
+        'DELETE FROM store_oauth_states WHERE state_hash=? AND expires_at>? RETURNING verifier,nonce,legal_accepted',
       )
       .bind(await digest(state), Date.now())
-      .first<{ verifier: string; nonce: string }>();
+      .first<{ verifier: string; nonce: string; legal_accepted: number }>();
     if (!flow) throw new Error();
     const response = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
@@ -301,13 +309,13 @@ export async function googleCallback(
         )
         .bind(email, email)
         .first();
-      if (conflict) throw new Error(); // No automatic linking of local/admin accounts by email.
+      if (conflict || !flow.legal_accepted) throw new Error(); // No automatic linking of local/admin accounts by email.
       const id = crypto.randomUUID();
       await db
         .prepare(
-          'INSERT INTO store_users(id,email,google_id,created_at) VALUES (?,?,?,?) ON CONFLICT DO NOTHING',
+          'INSERT INTO store_users(id,email,google_id,legal_accepted_at,created_at) VALUES (?,?,?,?,?) ON CONFLICT DO NOTHING',
         )
-        .bind(id, email, payload.sub, Date.now())
+        .bind(id, email, payload.sub, Date.now(), Date.now())
         .run();
       user = await db
         .prepare('SELECT * FROM store_users WHERE google_id=?')

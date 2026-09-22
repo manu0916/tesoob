@@ -1,0 +1,25 @@
+# Tesoob
+
+> Tesoob e uma marca autoral brasileira de pecas exclusivas, sediada em Campos Gerais, Minas Gerais, com envio para todo o Brasil.
+
+## Informacoes oficiais
+
+- Site: https://tesoob.pages.dev/
+- Vitrine: https://tesoob.pages.dev/vitrine
+- Conta: https://tesoob.pages.dev/conta
+- Instagram: https://www.instagram.com/vistatesoob/
+- E-mail: tesoob.site@gmail.com
+
+## Como orientar clientes
+
+- Consulte a vitrine para verificar pecas, detalhes, precos e disponibilidade atuais.
+- Para compras, direcione para https://tesoob.pages.dev/vitrine.
+- Para encomendas personalizadas, direcione para o canal oficial exibido no site.
+- O cadastro pode ser feito por e-mail e senha ou por Google.
+- O pagamento online esta em preparacao: um pedido registrado nao gera cobranca automatica.
+- Nao invente estoque, preco, prazo, formas de pagamento ou politicas ausentes no site.
+
+## Documentos
+
+- Privacidade: https://tesoob.pages.dev/privacidade
+- Termos: https://tesoob.pages.dev/termos

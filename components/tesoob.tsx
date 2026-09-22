@@ -28,7 +28,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { OrderLauncher } from '@/components/order-chat';
-import { MagneticStoreCTA } from '@/components/magnetic-store-cta';
 import {
   editorialPhotos,
   looks,
@@ -39,7 +38,6 @@ import {
 } from '@/lib/catalog';
 import {
   absoluteUrl,
-  contactUrl,
   hasWhatsApp,
   orderMessage,
   siteConfig,
@@ -164,6 +162,10 @@ export function SiteFooter() {
         </span>
         <Link href="/admin">Área do ateliê</Link>
         <Link href="/loja">Vitrine de vendas</Link>
+        <span>{siteConfig.locality} / Envio para todo o Brasil</span>
+        <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+        <Link href="/politica-de-privacidade">Política de Privacidade</Link>
+        <Link href="/termos-de-uso">Termos de Uso</Link>
         <a href="#conteudo">Voltar ao topo ↑</a>
       </div>
     </footer>
@@ -251,22 +253,15 @@ function Hero() {
             <br />
             Presença que não pede licença.
           </p>
-          <a className="action action-red" href="#pecas">
-            Explorar as peças <ArrowUpRight size={20} />
-          </a>
         </div>
-        <MagneticStoreCTA />
-        <a
-          className="hero-contact"
-          href={contactUrl()}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {hasWhatsApp
-            ? 'Já tem uma ideia? Fale pelo WhatsApp'
-            : 'Já tem uma ideia? Fale pelo Instagram'}{' '}
-          <ArrowUpRight size={13} />
-        </a>
+        <div className="hero-ctas">
+          <Link href="/loja" className="action action-red">
+            Ver peças disponíveis <ArrowUpRight size={20} />
+          </Link>
+          <OrderLauncher className="hero-order-cta">
+            Encomendar uma peça
+          </OrderLauncher>
+        </div>
         <a className="scroll-note" href="#pecas">
           <ArrowDown size={14} /> UM NOVO OLHAR, LOGO ABAIXO
         </a>
